@@ -6,6 +6,7 @@ namespace Gladiator_Wars
 {
     public class Game1 : Game
     {
+        private Texture2D texture;
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
 
@@ -26,8 +27,7 @@ namespace Gladiator_Wars
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
-
-            // TODO: use this.Content to load your game content here
+            texture = Content.Load<Texture2D>("Assets/spritesheet");
         }
 
         protected override void Update(GameTime gameTime)
@@ -44,7 +44,9 @@ namespace Gladiator_Wars
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            // TODO: Add your drawing code here
+            _spriteBatch.Begin();
+            _spriteBatch.Draw(texture, new Rectangle(0,0,170,136), Color.White);
+            _spriteBatch.End();
 
             base.Draw(gameTime);
         }
