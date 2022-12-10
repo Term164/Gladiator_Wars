@@ -37,7 +37,7 @@ namespace Gladiator_Wars.Components
         private void boardClick(Vector2 boardClickPosition) {
             Tile selectedTile = currentlevel.Board[(int)boardClickPosition.X, (int)boardClickPosition.Y];
 
-            if (active == null) setActiveTile(boardClickPosition);
+            if (active == null) setActiveTile(selectedTile);
             else {
                 if (active == selectedTile)
                 {
@@ -52,9 +52,9 @@ namespace Gladiator_Wars.Components
             updateTilesColor();
         }
 
-        private void setActiveTile(Vector2 boardClickPosition) {
-            if (currentlevel.Board[(int)boardClickPosition.X, (int)boardClickPosition.Y].unit != null) {
-                active = currentlevel.Board[(int)boardClickPosition.X, (int)boardClickPosition.Y];
+        private void setActiveTile(Tile selectedTile) {
+            if (selectedTile.unit != null) {
+                active = selectedTile;
                 possibleMoves = currentlevel.getUnitMoves(active);
             }
         }
@@ -67,7 +67,7 @@ namespace Gladiator_Wars.Components
 
         private void makeMove(Vector2 next)
         {
-            Move playerMove = new Move(active.unit, Action.Move,next);
+            Move playerMove = new Move(active.unit, Action.Move, currentlevel.Board[(int)next.X,(int)next.Y]);
             currentlevel.addNextMove(playerMove);
             resetActiveTile();
         }

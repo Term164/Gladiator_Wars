@@ -15,7 +15,7 @@ namespace Gladiator_Wars
     internal class Gladiator : GameObject, MovableObject
     {
 
-        public Vector2? nextNode;
+        public Tile? nextNode;
         public int moveDistance = 4;
         private float _velocity = 100;
 
@@ -25,7 +25,7 @@ namespace Gladiator_Wars
             set { _velocity = value; }
         }
         
-        public Gladiator(Vector2 position, Vector2 boardPosition) : base(position, boardPosition){
+        public Gladiator(Vector2 position, Tile boardPosition) : base(position, boardPosition){
             texturePath = "Assets/spritesheet";
             sourceRectangle = new Rectangle(1, 102, 32, 32);
         }
@@ -33,12 +33,12 @@ namespace Gladiator_Wars
         public void MoveObject(GameTime gameTime)
         {
             if (nextNode != null) {
-                Vector2 unitVectorInDirectionOfNextNode = (Vector2)nextNode - position;
+                Vector2 unitVectorInDirectionOfNextNode = (Vector2)nextNode.position - position;
                 unitVectorInDirectionOfNextNode.Normalize();
                 Vector2 moveVector = Vector2.Multiply(unitVectorInDirectionOfNextNode, _velocity * gameTime.ElapsedGameTime.Milliseconds/1000);
                 position += moveVector;
                 
-                if (Vector2.Distance(position, (Vector2)nextNode) < 2) {
+                if (Vector2.Distance(position, (Vector2)nextNode.position) < 2) {
                     nextNode = null;
                 }
             }

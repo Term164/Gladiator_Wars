@@ -33,14 +33,19 @@ namespace Gladiator_Wars
             {
                 for (int y = 0; y < BOARD_HEIGHT; y++)
                 {
-                    Board[x, y] = new Tile(new Vector2(x * Tile.TILE_SIZE, y * Tile.TILE_SIZE), new Vector2(x, y));
+                    Board[x, y] = new Tile(new Vector2(x * Tile.TILE_SIZE, y * Tile.TILE_SIZE), Board[x,y]);
                     _currentScene.addItem(Board[x, y]);
                 }
             }
 
-            Gladiator gladiator = new Gladiator(new Vector2(0, 0), new Vector2(0, 0));
-            Board[0, 0].unit = gladiator;
-            _currentScene.addItem(gladiator);
+            Gladiator gladiator1 = new Gladiator(new Vector2(2 * Tile.TILE_SIZE,0), Board[2, 0]);
+            Board[2, 0].unit = gladiator1;
+            _currentScene.addItem(gladiator1);
+
+
+            Gladiator gladiator2 = new Gladiator(new Vector2(0, 0), Board[0, 0]);
+            Board[0, 0].unit = gladiator2;
+            _currentScene.addItem(gladiator2);
         }
 
 
@@ -71,25 +76,32 @@ namespace Gladiator_Wars
         }
 
         public void moveUnit(Move unitMove) {
-            unitMove.unit.nextNode = new Vector2(unitMove.endPos.X*Tile.TILE_SIZE, unitMove.endPos.Y*Tile.TILE_SIZE);
-            Board[(int)unitMove.unit.boardPosition.X, (int)unitMove.unit.boardPosition.Y].unit = null;
+            unitMove.unit.nextNode = unitMove.endPos;
+            unitMove.unit.boardPosition.unit = null;
+            //Board[(int)unitMove.unit.boardPosition.X, (int)unitMove.unit.boardPosition.Y].unit = null;
             unitMove.unit.boardPosition = unitMove.endPos;
-            Board[(int)unitMove.endPos.X, (int)unitMove.endPos.Y].unit = unitMove.unit;
+            //Board[(int)unitMove.endPos.X, (int)unitMove.endPos.Y].unit = unitMove.unit;
+            unitMove.endPos.unit = unitMove.unit;
         }
 
         public List<Tile> getUnitMoves(Tile activeTile)
         {
             List<Tile> possibleMoves = new List<Tile>();
 
-            for(int x = -activeTile.unit.moveDistance; x <= activeTile.unit.moveDistance; x++)
+            for (int x = -activeTile.unit.moveDistance; x <= activeTile.unit.moveDistance; x++)
             {
+
                 for(int y = -activeTile.unit.moveDistance; y <= activeTile.unit.moveDistance; y++)
                 {
-                    if(activeTile.boardPosition.X + x >= 0 && activeTile.boardPosition.X + x < BOARD_WIDTH
-                        && activeTile.boardPosition.Y + y >= 0 && activeTile.boardPosition.Y + y < BOARD_HEIGHT
+                    int boardPositionX = GameObject.convertPositionToBoardPosition(activeTile.position.X + x*Tile.TILE_SIZE);
+                    int boardPositionY = GameObject.convertPositionToBoardPosition(activeTile.position.Y + y*Tile.TILE_SIZE);
+
+                    if (boardPositionX + x >= 0 && boardPositionX + x < BOARD_WIDTH
+                        && boardPositionY + y >= 0 && boardPositionY + y < BOARD_HEIGHT
                         && !(x == 0 && y == 0))
                     {
-                        possibleMoves.Add(Board[(int)activeTile.boardPosition.X + x, (int)activeTile.boardPosition.Y + y]);
+                        if (Board[boardPositionX, boardPositionY].unit == null)
+                            possibleMoves.Add(Board[boardPositionX, boardPositionY]);
                     }
                 }
             }

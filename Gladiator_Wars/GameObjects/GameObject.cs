@@ -12,12 +12,11 @@ namespace Gladiator_Wars
     {
         public Sprite sprite;
         public Vector2 position;
-        public Vector2 boardPosition;
+        public Tile boardPosition;
         public String texturePath;
         public Rectangle sourceRectangle;
         public Color tint = Color.White;
-
-        public GameObject(Vector2 position, Vector2 boardPosition)
+        public GameObject(Vector2 position, Tile boardPosition)
         {
             this.position = position;
             this.boardPosition = boardPosition;
@@ -31,6 +30,11 @@ namespace Gladiator_Wars
         public void loadContent(Texture2D texture)
         {
             sprite = new Sprite(texture, sourceRectangle);
+        }
+
+        public static int convertPositionToBoardPosition(float position)
+        {
+            return (int)(position / Tile.TILE_SIZE);
         }
     }
 }
