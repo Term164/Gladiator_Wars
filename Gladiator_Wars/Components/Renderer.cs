@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Gladiator_Wars.Components;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -34,11 +35,36 @@ namespace Gladiator_Wars
 
             foreach(GameObject entity in _currentLevel._currentScene.getSceneComponents())
             {
-                _spriteBatch.Draw(
+                if(entity is Gladiator)
+                {
+                    if (((Gladiator)entity).player is HumanPlayer)
+                    {
+                        _spriteBatch.Draw(
+                        entity.sprite.texture,
+                        entity.position,
+                        entity.sprite.sourceRectangle,
+                        entity.tint,
+                        0,
+                        new Vector2(0,0),
+                        1,SpriteEffects.FlipHorizontally,0);
+                    }
+                    else
+                    {
+                        _spriteBatch.Draw(
+                        entity.sprite.texture,
+                        entity.position,
+                        entity.sprite.sourceRectangle,
+                        entity.tint);
+                    }
+                }
+                else
+                {
+                    _spriteBatch.Draw(
                     entity.sprite.texture,
                     entity.position,
-                    entity.sprite.sourceRectangle, 
+                    entity.sprite.sourceRectangle,
                     entity.tint);
+                }
             }
 
             _spriteBatch.End();

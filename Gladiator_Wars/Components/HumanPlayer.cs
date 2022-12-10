@@ -18,7 +18,10 @@ namespace Gladiator_Wars.Components
         private Tile? active = null;
         private List<Tile>? possibleMoves = null;
 
-        public HumanPlayer(Game game, Level level) : base(game, level) {}
+        public HumanPlayer(Game game, Level level) : base(game, level) {
+            CreateNewGladiator(0,0);
+        }
+
         public override void Update(GameTime gameTime)
         {
             if (playerClicked())
@@ -45,7 +48,7 @@ namespace Gladiator_Wars.Components
                 }
                 else if (possibleMoves.Contains(selectedTile))
                 {
-                    makeMove(boardClickPosition);
+                    makeMove(selectedTile);
                 }
             }
 
@@ -65,14 +68,18 @@ namespace Gladiator_Wars.Components
             possibleMoves = null;
         }
 
-        private void makeMove(Vector2 next)
+        private void makeMove(Tile next)
         {
-            Move playerMove = new Move(active.unit, Action.Move, currentlevel.Board[(int)next.X,(int)next.Y]);
+            Move playerMove;
+            if (next.unit != null) playerMove = new Move(active.unit, Action.Attack, next); 
+            else playerMove = new Move(active.unit, Action.Move, next);
             currentlevel.addNextMove(playerMove);
             resetActiveTile();
         }
 
         private void updateTilesColor() {
+
+            // Clear the tile colors
             for (int x = 0; x < Level.BOARD_WIDTH; x++)
             {
                 for (int y = 0; y < Level.BOARD_HEIGHT; y++)
@@ -86,7 +93,8 @@ namespace Gladiator_Wars.Components
             {
                 foreach (Tile tile in possibleMoves)
                 {
-                    tile.tint = Color.Green;
+                    if (tile.unit != null) tile.tint = Color.Red;
+                    else tile.tint = Color.Green;
                 }
             }
             

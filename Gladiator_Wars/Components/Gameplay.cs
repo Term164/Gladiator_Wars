@@ -13,13 +13,11 @@ namespace Gladiator_Wars
     {
         // Game Components
         private HumanPlayer player;
+        private Player player2;
         private PhysicsEngine _physicsEngine;
         private Level _currentLevel;
         private Renderer _renderer;
-        
-        // TODO: Move to level class
-        private Tile active = null;
-        private ArrayList possibleMoves = null;
+
 
         public Gameplay(Game game) : base(game)
         {
@@ -27,10 +25,10 @@ namespace Gladiator_Wars
             _renderer = new Renderer(game, _currentLevel);
             _physicsEngine = new PhysicsEngine(game, _currentLevel);
             player = new HumanPlayer(game, _currentLevel);
-
+            player2 = new Player(game, _currentLevel);
 
             player.UpdateOrder = 0;
-            // AI
+            player2.UpdateOrder = 1;
             _physicsEngine.UpdateOrder = 2;
             _currentLevel.UpdateOrder = 3;
             this.UpdateOrder = 4;
@@ -38,6 +36,7 @@ namespace Gladiator_Wars
 
             // add components to game list
             game.Components.Add(player);
+            game.Components.Add(player2);
             game.Components.Add(_physicsEngine);
             game.Components.Add(_currentLevel);
             game.Components.Add(this);

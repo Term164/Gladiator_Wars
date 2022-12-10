@@ -1,4 +1,5 @@
-﻿using Gladiator_Wars.Infastructure;
+﻿using Gladiator_Wars.Components;
+using Gladiator_Wars.Infastructure;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -16,6 +17,9 @@ namespace Gladiator_Wars
 
         private Stack<Move> nextMoveStack;
         private List<Move> gameMoves;
+
+        public Player player1;
+        public Player player2;
 
         public Level(Game game) : base(game)
         {
@@ -37,15 +41,11 @@ namespace Gladiator_Wars
                     _currentScene.addItem(Board[x, y]);
                 }
             }
+        }
 
-            Gladiator gladiator1 = new Gladiator(new Vector2(2 * Tile.TILE_SIZE,0), Board[2, 0]);
-            Board[2, 0].unit = gladiator1;
-            _currentScene.addItem(gladiator1);
-
-
-            Gladiator gladiator2 = new Gladiator(new Vector2(0, 0), Board[0, 0]);
-            Board[0, 0].unit = gladiator2;
-            _currentScene.addItem(gladiator2);
+        public void loadPlayerUnits(Player player)
+        {
+            player.CreateNewGladiator(2, 0);
         }
 
 
@@ -67,6 +67,9 @@ namespace Gladiator_Wars
                 case Action.Move:
                     moveUnit(move);
                     break;
+                case Action.Attack:
+                    attackUnit(move);
+                    break;
                 default: break;
             }
         }
@@ -75,12 +78,19 @@ namespace Gladiator_Wars
             nextMoveStack.Push(move);
         }
 
-        public void moveUnit(Move unitMove) {
+
+        private void attackUnit(Move unitMove) {
             unitMove.unit.nextNode = unitMove.endPos;
             unitMove.unit.boardPosition.unit = null;
-            //Board[(int)unitMove.unit.boardPosition.X, (int)unitMove.unit.boardPosition.Y].unit = null;
             unitMove.unit.boardPosition = unitMove.endPos;
-            //Board[(int)unitMove.endPos.X, (int)unitMove.endPos.Y].unit = unitMove.unit;
+            unitMove.endPos.unit.RemoveGladiator();
+            unitMove.endPos.unit = unitMove.unit;
+        }
+
+        private void moveUnit(Move unitMove) {
+            unitMove.unit.nextNode = unitMove.endPos;
+            unitMove.unit.boardPosition.unit = null;
+            unitMove.unit.boardPosition = unitMove.endPos;
             unitMove.endPos.unit = unitMove.unit;
         }
 
@@ -96,11 +106,13 @@ namespace Gladiator_Wars
                     int boardPositionX = GameObject.convertPositionToBoardPosition(activeTile.position.X + x*Tile.TILE_SIZE);
                     int boardPositionY = GameObject.convertPositionToBoardPosition(activeTile.position.Y + y*Tile.TILE_SIZE);
 
-                    if (boardPositionX + x >= 0 && boardPositionX + x < BOARD_WIDTH
-                        && boardPositionY + y >= 0 && boardPositionY + y < BOARD_HEIGHT
+                    if (boardPositionX>= 0 && boardPositionX< BOARD_WIDTH
+                        && boardPositionY >= 0 && boardPositionY < BOARD_HEIGHT
                         && !(x == 0 && y == 0))
                     {
                         if (Board[boardPositionX, boardPositionY].unit == null)
+                            possibleMoves.Add(Board[boardPositionX, boardPositionY]);
+                        else if(Board[boardPositionX, boardPositionY].unit.player != activeTile.unit.player)
                             possibleMoves.Add(Board[boardPositionX, boardPositionY]);
                     }
                 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Gladiator_Wars.Components;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -15,9 +16,13 @@ namespace Gladiator_Wars
     internal class Gladiator : GameObject, MovableObject
     {
 
+        //public static Sprite GladiatorSprite;
+        // TODO: Create sprites for every class and store it in that class as a static variable.
+
         public Tile? nextNode;
         public int moveDistance = 4;
         private float _velocity = 100;
+        public Player player;
 
         public float velocity
         {
@@ -25,9 +30,11 @@ namespace Gladiator_Wars
             set { _velocity = value; }
         }
         
-        public Gladiator(Vector2 position, Tile boardPosition) : base(position, boardPosition){
+        public Gladiator(Vector2 position, Tile boardPosition, Player player) : base(position, boardPosition){
             texturePath = "Assets/spritesheet";
             sourceRectangle = new Rectangle(1, 102, 32, 32);
+            this.player = player;
+            player.units.Add(this);
         }
 
         public void MoveObject(GameTime gameTime)
@@ -42,7 +49,12 @@ namespace Gladiator_Wars
                     nextNode = null;
                 }
             }
-            
+        }
+
+        public void RemoveGladiator()
+        {
+            player.RemoveGladiator(this);
+            boardPosition.unit = null;
         }
     }
 }
