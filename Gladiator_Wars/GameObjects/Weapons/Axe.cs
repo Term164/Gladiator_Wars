@@ -8,7 +8,7 @@ namespace Gladiator_Wars
 {
     internal class Axe : Weapon
     {
-        public Axe(WeaponQuality quality) {
+        public Axe(Quality quality) {
             type = WeaponType.Melee;
             range = 1;
             weight = 30;

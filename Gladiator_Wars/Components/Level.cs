@@ -11,7 +11,8 @@ namespace Gladiator_Wars
     internal class Level : GameComponent
     {
 
-        public static readonly int BOARD_HEIGHT = 7, BOARD_WIDTH = 14;
+        public static readonly int BOARD_HEIGHT = 7, BOARD_WIDTH = 12;
+        // Queue of characters to determine play order
         public Scene _currentScene;
         public Tile[,] Board;
 

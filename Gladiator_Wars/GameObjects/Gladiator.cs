@@ -15,14 +15,36 @@ namespace Gladiator_Wars
 
     internal class Gladiator : GameObject, MovableObject
     {
+        private readonly int BASE_INITIATIVE = 100;
+        private readonly int BASE_HEALTH = 100;
+        
 
-        public static Sprite GladiatorSprite;
-        // TODO: Create sprites for every class and store it in that class as a static variable.
 
         public Tile? nextNode;
-        public int moveDistance = 4;
         private float _velocity = 100;
         public Player player;
+
+        // Gladiators stats
+        public int healthPoints;
+        public int experiencePoints;
+        public int totalWeight;
+        public int maxWeight;
+        public int moveDistance = 1;
+        public int ArmourPoints;
+
+        // Stats that can be changed with experiencePoints
+        public int strength; // Increases maxWeight capacity + melee damage
+        public int toughness; // Increases HP
+        public int Athletics; // Increases movement distance + dodge chance
+        public int dexterity; // Increases melee weapon damage
+        public int perception; // Increases chance to dodge/block + damage with throwing weapons
+
+        // Gladiator equipment
+        Weapon weapon;
+        Armour armour;
+        Shield shield;
+
+
 
         public float velocity
         {
@@ -49,10 +71,20 @@ namespace Gladiator_Wars
             }
         }
 
+        public int getDamageValue()
+        {
+            return (int)(weapon.damage * (1.0 + (dexterity + strength) / 200.0));
+        }
+
         public void RemoveGladiator()
         {
             player.RemoveGladiator(this);
             boardPosition.unit = null;
+        }
+
+        public int getInitiative()
+        {
+            return BASE_INITIATIVE - totalWeight + Athletics;
         }
     }
 }

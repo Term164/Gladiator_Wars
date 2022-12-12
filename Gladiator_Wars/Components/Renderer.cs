@@ -42,6 +42,7 @@ namespace Gladiator_Wars
             foreach(GameObject entity in _currentLevel._currentScene.getSceneComponents())
             {
                 Sprite entitySprite = spriteLookupDictionary[entity.GetType().Name];
+
                 if(entity is Gladiator)
                 {
                     if (((Gladiator)entity).player is HumanPlayer)
@@ -54,24 +55,15 @@ namespace Gladiator_Wars
                         0,
                         new Vector2(0,0),
                         1,SpriteEffects.FlipHorizontally,0);
-                    }
-                    else
-                    {
-                        _spriteBatch.Draw(
-                        entitySprite.texture,
-                        entity.position,
-                        entitySprite.sourceRectangle,
-                        entity.tint);
+                        continue;
                     }
                 }
-                else
-                {
-                    _spriteBatch.Draw(
-                    entitySprite.texture,
-                    entity.position,
-                    entitySprite.sourceRectangle,
-                    entity.tint);
-                }
+                
+                _spriteBatch.Draw(
+                entitySprite.texture,
+                entity.position,
+                entitySprite.sourceRectangle,
+                entity.tint);
             }
 
             _spriteBatch.End();

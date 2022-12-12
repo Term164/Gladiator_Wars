@@ -8,7 +8,7 @@ namespace Gladiator_Wars
 {
     internal class Bow : Weapon
     {
-        public Bow(WeaponQuality quality) {
+        public Bow(Quality quality) {
             type = WeaponType.Ranged;
             range = 4;
             weight = 5;

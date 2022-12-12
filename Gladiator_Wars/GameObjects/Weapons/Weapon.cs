@@ -6,18 +6,18 @@ using System.Threading.Tasks;
 
 namespace Gladiator_Wars
 {
+    public enum Quality
+    {
+        common,
+        rare,
+        legendary
+    }
+
     public enum WeaponType
     {
         Melee,
         Ranged,
         Hybrid
-    }
-
-    public enum WeaponQuality
-    {
-        common,
-        rare,
-        legendary
     }
 
     internal class Weapon : GameObject
@@ -28,22 +28,26 @@ namespace Gladiator_Wars
         public int weight;
         public int range;
         public WeaponType type;
+        public Quality quality;
 
-        public void setWeaponQuality(WeaponQuality quality)
+        public void setWeaponQuality(Quality quality)
         {
             switch(quality)
             {
-                case WeaponQuality.common:
-                    damage = random.Next(5,10);
+                case Quality.common:
+                    damage = random.Next(6,12);
                     durability = random.Next(30,50);
+                    this.quality = Quality.common;
                     break;
-                case WeaponQuality.rare:
-                    damage = random.Next(10,20);
+                case Quality.rare:
+                    damage = random.Next(11,22);
                     durability= random.Next(50,70);
+                    this.quality = Quality.rare;
                     break;
-                case WeaponQuality.legendary:
+                case Quality.legendary:
                     damage = random.Next(20,30);
                     durability= random.Next(70,100);
+                    this.quality = Quality.legendary;
                     break;
                 default:
                     throw new Exception("This type of Weapon Quality does not exist.");

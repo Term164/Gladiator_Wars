@@ -8,7 +8,7 @@ namespace Gladiator_Wars
 {
     internal class Spear : Weapon
     {
-        public Spear(WeaponQuality quality) {
+        public Spear(Quality quality) {
             type = WeaponType.Melee;
             range = 2;
             weight = 25;
