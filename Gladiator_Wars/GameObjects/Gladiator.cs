@@ -16,7 +16,7 @@ namespace Gladiator_Wars
     internal class Gladiator : GameObject, MovableObject
     {
 
-        //public static Sprite GladiatorSprite;
+        public static Sprite GladiatorSprite;
         // TODO: Create sprites for every class and store it in that class as a static variable.
 
         public Tile? nextNode;
@@ -31,8 +31,6 @@ namespace Gladiator_Wars
         }
         
         public Gladiator(Vector2 position, Tile boardPosition, Player player) : base(position, boardPosition){
-            texturePath = "Assets/spritesheet";
-            sourceRectangle = new Rectangle(1, 102, 32, 32);
             this.player = player;
             player.units.Add(this);
         }

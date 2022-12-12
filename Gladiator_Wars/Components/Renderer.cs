@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
+using System.Collections.Generic;
 
 namespace Gladiator_Wars
 {
@@ -12,20 +13,25 @@ namespace Gladiator_Wars
         private SpriteBatch _spriteBatch;
         private Level _currentLevel;
         public static readonly float SCALE = 4;
+        private Dictionary<string, Sprite> spriteLookupDictionary;
 
         public Renderer(Game game, Level level) : base(game)
         {
             _currentLevel = level;
+            spriteLookupDictionary = new Dictionary<string, Sprite>();
         }
 
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
-            
-            foreach(GameObject entity in _currentLevel._currentScene.getSceneComponents())
-            {
-                entity.loadContent(Game.Content.Load<Texture2D>(entity.texturePath));
-            }
+
+            Texture2D spriteSheetTexture = Game.Content.Load<Texture2D>("Assets/spritesheet");
+
+            // Define all sprites for all drawable objects in the game;
+            spriteLookupDictionary["Gladiator"] = new Sprite(spriteSheetTexture, new Rectangle(1,102,32,32));
+            spriteLookupDictionary["Tile"] = new Sprite(spriteSheetTexture, new Rectangle(103, 69, 32, 32));
+
+
             base.LoadContent();
         }
 
@@ -35,14 +41,15 @@ namespace Gladiator_Wars
 
             foreach(GameObject entity in _currentLevel._currentScene.getSceneComponents())
             {
+                Sprite entitySprite = spriteLookupDictionary[entity.GetType().Name];
                 if(entity is Gladiator)
                 {
                     if (((Gladiator)entity).player is HumanPlayer)
                     {
                         _spriteBatch.Draw(
-                        entity.sprite.texture,
+                        entitySprite.texture,
                         entity.position,
-                        entity.sprite.sourceRectangle,
+                        entitySprite.sourceRectangle,
                         entity.tint,
                         0,
                         new Vector2(0,0),
@@ -51,18 +58,18 @@ namespace Gladiator_Wars
                     else
                     {
                         _spriteBatch.Draw(
-                        entity.sprite.texture,
+                        entitySprite.texture,
                         entity.position,
-                        entity.sprite.sourceRectangle,
+                        entitySprite.sourceRectangle,
                         entity.tint);
                     }
                 }
                 else
                 {
                     _spriteBatch.Draw(
-                    entity.sprite.texture,
+                    entitySprite.texture,
                     entity.position,
-                    entity.sprite.sourceRectangle,
+                    entitySprite.sourceRectangle,
                     entity.tint);
                 }
             }

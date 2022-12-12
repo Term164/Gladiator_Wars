@@ -10,8 +10,6 @@ namespace Gladiator_Wars
 
         public Tile(Vector2 position, Tile BoardPosition) : base(position, BoardPosition)
         {
-            texturePath = "Assets/spritesheet";
-            sourceRectangle = new Rectangle(103,69,32,32);
         }
     }
 }
