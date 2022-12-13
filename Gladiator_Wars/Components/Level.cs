@@ -11,8 +11,9 @@ namespace Gladiator_Wars
     internal class Level : GameComponent
     {
 
-        public static readonly int BOARD_HEIGHT = 7, BOARD_WIDTH = 12;
+        public static readonly int BOARD_HEIGHT = 9, BOARD_WIDTH = 16;
         // Queue of characters to determine play order
+        public Queue<Gladiator> unitsPlayOrder;
         public Scene _currentScene;
         public Tile[,] Board;
 
@@ -27,18 +28,23 @@ namespace Gladiator_Wars
             _currentScene = new Scene();
             gameMoves = new List<Move>();
             nextMoveStack = new Stack<Move>();
+            unitsPlayOrder = new Queue<Gladiator>();
             initLevel();
         }
 
         // Initialize level with gameObjects
         public void initLevel()
         {
-            Board = new Tile[BOARD_WIDTH, BOARD_HEIGHT];
+            Board = new Tile[BOARD_WIDTH+2, BOARD_HEIGHT+2];
             for (int x = 0; x < BOARD_WIDTH; x++)
             {
                 for (int y = 0; y < BOARD_HEIGHT; y++)
                 {
-                    Board[x, y] = new Tile(new Vector2(x * Tile.TILE_SIZE, y * Tile.TILE_SIZE), Board[x,y]);
+                    
+                    if(x == 0 || x == BOARD_WIDTH-1 || y == 0 || y == BOARD_HEIGHT-1) 
+                        Board[x, y] = new Wall(new Vector2(x * Tile.TILE_SIZE, y * Tile.TILE_SIZE), Board[x, y]);
+                    else
+                        Board[x, y] = new Tile(new Vector2(x * Tile.TILE_SIZE, y * Tile.TILE_SIZE), Board[x,y]);
                     _currentScene.addItem(Board[x, y]);
                 }
             }
@@ -46,7 +52,22 @@ namespace Gladiator_Wars
 
         public void loadPlayerUnits(Player player)
         {
-            player.CreateNewGladiator(2, 0);
+            player.CreateNewGladiator(2, 1);
+            createGladiatorQueue();
+        }
+
+        private void createGladiatorQueue()
+        {
+            List<Gladiator> allBoardUnits = new List<Gladiator>();
+            allBoardUnits.AddRange(player1.units);
+            allBoardUnits.AddRange(player2.units);
+            allBoardUnits.Sort();
+            foreach (Gladiator gladiator in allBoardUnits)
+            {
+                unitsPlayOrder.Enqueue(gladiator);
+            }
+            
+            Gladiator gladiator1 = unitsPlayOrder.Dequeue();
         }
 
 
@@ -107,8 +128,8 @@ namespace Gladiator_Wars
                     int boardPositionX = GameObject.convertPositionToBoardPosition(activeTile.position.X + x*Tile.TILE_SIZE);
                     int boardPositionY = GameObject.convertPositionToBoardPosition(activeTile.position.Y + y*Tile.TILE_SIZE);
 
-                    if (boardPositionX>= 0 && boardPositionX< BOARD_WIDTH
-                        && boardPositionY >= 0 && boardPositionY < BOARD_HEIGHT
+                    if (boardPositionX >= 1 && boardPositionX < BOARD_WIDTH-1
+                        && boardPositionY >= 1 && boardPositionY < BOARD_HEIGHT-1
                         && !(x == 0 && y == 0))
                     {
                         if (Board[boardPositionX, boardPositionY].unit == null)

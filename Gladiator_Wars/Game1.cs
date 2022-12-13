@@ -9,13 +9,14 @@ namespace Gladiator_Wars
     {
         private GraphicsDeviceManager _graphics;
         private Gameplay _gameplay;
+        //public static 
 
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
             _graphics.PreferredBackBufferWidth = 1920;
             _graphics.PreferredBackBufferHeight = 1080;
-            //_graphics.IsFullScreen = true;
+            _graphics.IsFullScreen = true;
 
             _graphics.ApplyChanges();
             Content.RootDirectory = "Content";

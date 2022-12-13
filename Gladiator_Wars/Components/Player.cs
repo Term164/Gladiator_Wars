@@ -23,8 +23,8 @@ namespace Gladiator_Wars.Components
             if (level.player1 == null) level.player1 = this;
             else {
                 // Initialize AI units
-                level.loadPlayerUnits(this);
                 level.player2 = this;
+                level.loadPlayerUnits(this);
             }
             
 

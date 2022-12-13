@@ -12,7 +12,7 @@ namespace Gladiator_Wars
     {
         private SpriteBatch _spriteBatch;
         private Level _currentLevel;
-        public static readonly float SCALE = 4;
+        public static float SCALE = 1;
         private Dictionary<string, Sprite> spriteLookupDictionary;
 
         public Renderer(Game game, Level level) : base(game)
@@ -30,13 +30,18 @@ namespace Gladiator_Wars
             // Define all sprites for all drawable objects in the game;
             spriteLookupDictionary["Gladiator"] = new Sprite(spriteSheetTexture, new Rectangle(1,102,32,32));
             spriteLookupDictionary["Tile"] = new Sprite(spriteSheetTexture, new Rectangle(103, 69, 32, 32));
-
+            spriteLookupDictionary["Wall"] = new Sprite(spriteSheetTexture, new Rectangle(137,69,32,32));
 
             base.LoadContent();
         }
 
         public override void Draw(GameTime gameTime)
         {
+
+            int w = GraphicsDevice.Viewport.Width;
+
+            SCALE = w / (float)((Level.BOARD_WIDTH) * Tile.TILE_SIZE);
+
             _spriteBatch.Begin(samplerState:SamplerState.PointClamp, transformMatrix:Matrix.CreateScale(SCALE));
 
             foreach(GameObject entity in _currentLevel._currentScene.getSceneComponents())

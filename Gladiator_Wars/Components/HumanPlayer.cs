@@ -19,7 +19,8 @@ namespace Gladiator_Wars.Components
         private List<Tile>? possibleMoves = null;
 
         public HumanPlayer(Game game, Level level) : base(game, level) {
-            CreateNewGladiator(0,0);
+            Gladiator gladiator =  CreateNewGladiator(1,1);
+            gladiator.Athletics = 10;
         }
 
         public override void Update(GameTime gameTime)

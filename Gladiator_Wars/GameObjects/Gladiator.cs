@@ -3,6 +3,8 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
+using System.Collections.Generic;
 
 namespace Gladiator_Wars
 {
@@ -13,12 +15,14 @@ namespace Gladiator_Wars
 
     }
 
-    internal class Gladiator : GameObject, MovableObject
+    internal class Gladiator : GameObject, MovableObject, IComparable<Gladiator>
     {
         private readonly int BASE_INITIATIVE = 100;
         private readonly int BASE_HEALTH = 100;
-        
 
+        public bool movePoint = true; // Action point for moving
+        public bool attackPoint = true; // Action point for attacking
+        public bool alive = true;
 
         public Tile? nextNode;
         private float _velocity = 100;
@@ -26,25 +30,23 @@ namespace Gladiator_Wars
 
         // Gladiators stats
         public int healthPoints;
-        public int experiencePoints;
-        public int totalWeight;
-        public int maxWeight;
+        public int experiencePoints = 0;
+        public int totalWeight = 0;
+        public int maxWeight = 100;
         public int moveDistance = 1;
-        public int ArmourPoints;
+        public int ArmourPoints = 1;
 
         // Stats that can be changed with experiencePoints
-        public int strength; // Increases maxWeight capacity + melee damage
-        public int toughness; // Increases HP
-        public int Athletics; // Increases movement distance + dodge chance
-        public int dexterity; // Increases melee weapon damage
-        public int perception; // Increases chance to dodge/block + damage with throwing weapons
+        public int strength = 1; // Increases maxWeight capacity + melee damage
+        public int toughness = 1; // Increases HP
+        public int Athletics = 1; // Increases movement distance + dodge chance
+        public int dexterity = 1; // Increases melee weapon damage
+        public int perception = 1; // Increases chance to dodge/block + damage with throwing weapons
 
         // Gladiator equipment
         Weapon weapon;
         Armour armour;
         Shield shield;
-
-
 
         public float velocity
         {
@@ -55,6 +57,8 @@ namespace Gladiator_Wars
         public Gladiator(Vector2 position, Tile boardPosition, Player player) : base(position, boardPosition){
             this.player = player;
             player.units.Add(this);
+            weapon = new Hands();
+            calculateHealthPoints();
         }
 
         public void MoveObject(GameTime gameTime)
@@ -71,20 +75,34 @@ namespace Gladiator_Wars
             }
         }
 
-        public int getDamageValue()
-        {
-            return (int)(weapon.damage * (1.0 + (dexterity + strength) / 200.0));
-        }
-
         public void RemoveGladiator()
         {
             player.RemoveGladiator(this);
             boardPosition.unit = null;
         }
 
+
+        // ============================= STAT BASED METHODS =====================
+        public int getDamageValue()
+        {
+            return (int)(weapon.damage * (1.0 + (dexterity + strength) / 200.0));
+        }
+
+        public void calculateHealthPoints()
+        {
+            healthPoints = (int)(BASE_HEALTH * 1.0+toughness/100);
+        }
+
         public int getInitiative()
         {
             return BASE_INITIATIVE - totalWeight + Athletics;
+        }
+
+        // ========================== HELPER METHODS ==============================
+
+        public int CompareTo(Gladiator other)
+        {
+            return other.getInitiative().CompareTo(this.getInitiative());
         }
     }
 }
