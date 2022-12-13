@@ -30,6 +30,7 @@ namespace Gladiator_Wars
                 default:
                     throw new Exception("This type of Armour Quality does not exist.");
             }
+            base.setArmourQuality(quality);
         }
     }
 }
