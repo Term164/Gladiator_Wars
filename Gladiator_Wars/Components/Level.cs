@@ -35,7 +35,7 @@ namespace Gladiator_Wars
         // Initialize level with gameObjects
         public void initLevel()
         {
-            Board = new Tile[BOARD_WIDTH+2, BOARD_HEIGHT+2];
+            Board = new Tile[BOARD_WIDTH, BOARD_HEIGHT];
             for (int x = 0; x < BOARD_WIDTH; x++)
             {
                 for (int y = 0; y < BOARD_HEIGHT; y++)
@@ -67,7 +67,21 @@ namespace Gladiator_Wars
                 unitsPlayOrder.Enqueue(gladiator);
             }
             
-            Gladiator gladiator1 = unitsPlayOrder.Dequeue();
+            selectNextUnit();
+        }
+
+        private void selectNextUnit()
+        {
+            Gladiator nextUnit = unitsPlayOrder.Dequeue();
+            while (!nextUnit.alive)
+            {
+                nextUnit = unitsPlayOrder.Dequeue();
+            }
+
+            nextUnit.player.setActiveTile(nextUnit.boardPosition);
+            nextUnit.player.hasTurn = true;
+            unitsPlayOrder.Enqueue(nextUnit);
+
         }
 
 
@@ -94,6 +108,21 @@ namespace Gladiator_Wars
                     break;
                 default: break;
             }
+
+            Gladiator gladiator = move.unit;
+
+            if (!gladiator.hasActionPoints())
+            {
+                gladiator.attackPoint = true;
+                gladiator.movePoint= true;
+                gladiator.player.hasTurn = false;
+                selectNextUnit();
+            }
+            else
+            {
+                move.unit.player.setActiveTile(move.unit.boardPosition);
+            }
+
         }
 
         public void addNextMove(Move move) {
@@ -102,43 +131,86 @@ namespace Gladiator_Wars
 
 
         private void attackUnit(Move unitMove) {
-            unitMove.unit.nextNode = unitMove.endPos;
-            unitMove.unit.boardPosition.unit = null;
-            unitMove.unit.boardPosition = unitMove.endPos;
-            unitMove.endPos.unit.RemoveGladiator();
-            unitMove.endPos.unit = unitMove.unit;
+            unitMove.unit.attackPoint = false;
+            unitMove.unit.attack(unitMove.endPos.unit);
         }
 
         private void moveUnit(Move unitMove) {
+            if (unitMove.unit.movePoint) unitMove.unit.movePoint = false;
+            else unitMove.unit.attackPoint = false;
+
             unitMove.unit.nextNode = unitMove.endPos;
             unitMove.unit.boardPosition.unit = null;
             unitMove.unit.boardPosition = unitMove.endPos;
             unitMove.endPos.unit = unitMove.unit;
         }
 
-        public List<Tile> getUnitMoves(Tile activeTile)
+        public List<Move> getUnitMoves(Tile activeTile)
         {
-            List<Tile> possibleMoves = new List<Tile>();
+
+            List<Move> possibleMoves = new List<Move>();
+            possibleMoves.AddRange(getAllUnitMovementMoves(activeTile));
+            if (activeTile.unit.attackPoint) possibleMoves.AddRange(getAllUnitAttackMoves(activeTile));
+            return possibleMoves;
+        }
+
+
+        private List<Move> getAllUnitMovementMoves(Tile activeTile)
+        {
+            List<Move> possibleMoves = new List<Move>();
 
             for (int x = -activeTile.unit.moveDistance; x <= activeTile.unit.moveDistance; x++)
             {
 
-                for(int y = -activeTile.unit.moveDistance; y <= activeTile.unit.moveDistance; y++)
+                for (int y = -activeTile.unit.moveDistance; y <= activeTile.unit.moveDistance; y++)
                 {
-                    int boardPositionX = GameObject.convertPositionToBoardPosition(activeTile.position.X + x*Tile.TILE_SIZE);
-                    int boardPositionY = GameObject.convertPositionToBoardPosition(activeTile.position.Y + y*Tile.TILE_SIZE);
+                    int boardPositionX = GameObject.convertPositionToBoardPosition(activeTile.position.X + x * Tile.TILE_SIZE);
+                    int boardPositionY = GameObject.convertPositionToBoardPosition(activeTile.position.Y + y * Tile.TILE_SIZE);
 
-                    if (boardPositionX >= 1 && boardPositionX < BOARD_WIDTH-1
-                        && boardPositionY >= 1 && boardPositionY < BOARD_HEIGHT-1
+                    if (boardPositionX >= 1 && boardPositionX < BOARD_WIDTH - 1
+                        && boardPositionY >= 1 && boardPositionY < BOARD_HEIGHT - 1
                         && !(x == 0 && y == 0))
                     {
                         if (Board[boardPositionX, boardPositionY].unit == null)
-                            possibleMoves.Add(Board[boardPositionX, boardPositionY]);
-                        else if(Board[boardPositionX, boardPositionY].unit.player != activeTile.unit.player)
-                            possibleMoves.Add(Board[boardPositionX, boardPositionY]);
+                        {
+                            possibleMoves.Add(new Move(activeTile.unit, Action.Move, Board[boardPositionX, boardPositionY]));
+                        }
+                            
                     }
                 }
             }
+            return possibleMoves;
+        }
+
+        private List<Move> getAllUnitAttackMoves(Tile activeTile)
+        {
+            List<Move> possibleMoves = new List<Move>();
+
+            for (int x = -activeTile.unit.weapon.damage; x <= activeTile.unit.weapon.damage; x++)
+            {
+
+                for (int y = -activeTile.unit.weapon.damage; y <= activeTile.unit.weapon.damage; y++)
+                {
+                    int boardPositionX = GameObject.convertPositionToBoardPosition(activeTile.position.X + x * Tile.TILE_SIZE);
+                    int boardPositionY = GameObject.convertPositionToBoardPosition(activeTile.position.Y + y * Tile.TILE_SIZE);
+
+                    if (boardPositionX >= 1 && boardPositionX < BOARD_WIDTH - 1
+                        && boardPositionY >= 1 && boardPositionY < BOARD_HEIGHT - 1
+                        && !(x == 0 && y == 0))
+                    {
+                        if (Board[boardPositionX, boardPositionY].unit != null)
+                        {
+                            if (Board[boardPositionX, boardPositionY].unit.player != activeTile.unit.player)
+                            {
+                                possibleMoves.Add(new Move(activeTile.unit, Action.Attack, Board[boardPositionX, boardPositionY]));
+                            }
+                            
+                        }
+
+                    }
+                }
+            }
+
             return possibleMoves;
         }
 
