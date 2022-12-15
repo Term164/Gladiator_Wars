@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Gladiator_Wars.Infastructure;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -14,6 +15,11 @@ namespace Gladiator_Wars.Components
         public Level currentlevel;
         public List<Gladiator> units;
 
+        public Tile? active = null;
+        public List<Move>? possibleMoves = null;
+
+        public bool hasTurn;
+
         public Player(Game game, Level level) : base(game)
         {
             units = new List<Gladiator>();
@@ -28,6 +34,27 @@ namespace Gladiator_Wars.Components
             }
             
 
+        }
+
+        public virtual void setActiveTile(Tile selectedTile)
+        {
+            if (selectedTile.unit != null)
+            {
+                active = selectedTile;
+                possibleMoves = currentlevel.getUnitMoves(active);
+            }
+        }
+
+        private void resetActiveTile()
+        {
+            active = null;
+            possibleMoves = null;
+        }
+
+        public void makeMove(Move move)
+        {
+            currentlevel.addNextMove(move);
+            resetActiveTile();
         }
 
         public Gladiator CreateNewGladiator(int boardX, int boardY)
@@ -50,7 +77,7 @@ namespace Gladiator_Wars.Components
             {
                 if(units.Count < 1)
                 {
-                    CreateNewGladiator(Level.BOARD_WIDTH-1, Level.BOARD_HEIGHT-1);
+                    CreateNewGladiator(Level.BOARD_WIDTH-2, Level.BOARD_HEIGHT-2);
                 }
             }
             base.Update(gameTime);

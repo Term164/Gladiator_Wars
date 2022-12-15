@@ -13,7 +13,7 @@ namespace Gladiator_Wars
     {
         // Game Components
         private HumanPlayer player;
-        private Player player2;
+        private AIPlayer player2;
         private PhysicsEngine _physicsEngine;
         private Level _currentLevel;
         private Renderer _renderer;
@@ -25,7 +25,7 @@ namespace Gladiator_Wars
             _renderer = new Renderer(game, _currentLevel);
             _physicsEngine = new PhysicsEngine(game, _currentLevel);
             player = new HumanPlayer(game, _currentLevel);
-            player2 = new Player(game, _currentLevel);
+            player2 = new AIPlayer(game, _currentLevel);
 
             player.UpdateOrder = 0;
             player2.UpdateOrder = 1;

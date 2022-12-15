@@ -28,6 +28,8 @@ namespace Gladiator_Wars
         private float _velocity = 100;
         public Player player;
 
+        public string name;
+
         // Gladiators stats
         public int healthPoints;
         public int experiencePoints = 0;
@@ -44,9 +46,9 @@ namespace Gladiator_Wars
         public int perception = 1; // Increases chance to dodge/block + damage with throwing weapons
 
         // Gladiator equipment
-        Weapon weapon;
-        Armour armour;
-        Shield shield;
+        public Weapon weapon;
+        public Armour armour;
+        public Shield shield;
 
         public float velocity
         {
@@ -61,24 +63,19 @@ namespace Gladiator_Wars
             calculateHealthPoints();
         }
 
-        public void MoveObject(GameTime gameTime)
+        public void attack(Gladiator gladiator)
         {
-            if (nextNode != null) {
-                Vector2 unitVectorInDirectionOfNextNode = (Vector2)nextNode.position - position;
-                unitVectorInDirectionOfNextNode.Normalize();
-                Vector2 moveVector = Vector2.Multiply(unitVectorInDirectionOfNextNode, _velocity * gameTime.ElapsedGameTime.Milliseconds/1000);
-                position += moveVector;
-                
-                if (Vector2.Distance(position, (Vector2)nextNode.position) < 2) {
-                    nextNode = null;
-                }
-            }
+            gladiator.recieveDamage(weapon.damage);
         }
 
-        public void RemoveGladiator()
-        {
-            player.RemoveGladiator(this);
-            boardPosition.unit = null;
+        public void recieveDamage(int damage){
+            healthPoints -= damage - ArmourPoints;
+            // TODO: dodge chance
+            if (healthPoints < 0)
+            {
+                alive = false;
+                RemoveGladiator();
+            }
         }
 
 
@@ -103,6 +100,34 @@ namespace Gladiator_Wars
         public int CompareTo(Gladiator other)
         {
             return other.getInitiative().CompareTo(this.getInitiative());
+        }
+
+        public bool hasActionPoints()
+        {
+            return movePoint || attackPoint;
+        }
+
+          public void RemoveGladiator()
+        {
+            player.RemoveGladiator(this);
+            boardPosition.unit = null;
+        }
+
+
+        public void MoveObject(GameTime gameTime)
+        {
+            if (nextNode != null)
+            {
+                Vector2 unitVectorInDirectionOfNextNode = (Vector2)nextNode.position - position;
+                unitVectorInDirectionOfNextNode.Normalize();
+                Vector2 moveVector = Vector2.Multiply(unitVectorInDirectionOfNextNode, _velocity * gameTime.ElapsedGameTime.Milliseconds / 1000);
+                position += moveVector;
+
+                if (Vector2.Distance(position, (Vector2)nextNode.position) < 2)
+                {
+                    nextNode = null;
+                }
+            }
         }
     }
 }

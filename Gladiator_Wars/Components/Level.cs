@@ -186,10 +186,10 @@ namespace Gladiator_Wars
         {
             List<Move> possibleMoves = new List<Move>();
 
-            for (int x = -activeTile.unit.weapon.damage; x <= activeTile.unit.weapon.damage; x++)
+            for (int x = -activeTile.unit.weapon.range; x <= activeTile.unit.weapon.range; x++)
             {
 
-                for (int y = -activeTile.unit.weapon.damage; y <= activeTile.unit.weapon.damage; y++)
+                for (int y = -activeTile.unit.weapon.range; y <= activeTile.unit.weapon.range; y++)
                 {
                     int boardPositionX = GameObject.convertPositionToBoardPosition(activeTile.position.X + x * Tile.TILE_SIZE);
                     int boardPositionY = GameObject.convertPositionToBoardPosition(activeTile.position.Y + y * Tile.TILE_SIZE);
