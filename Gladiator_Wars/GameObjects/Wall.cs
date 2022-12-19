@@ -11,7 +11,6 @@ namespace Gladiator_Wars
     {
         public Wall(Vector2 position, Tile BoardPosition) : base(position, BoardPosition)
         {
-
         }
     }
 }

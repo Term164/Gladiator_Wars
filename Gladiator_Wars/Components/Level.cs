@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace Gladiator_Wars
@@ -13,8 +14,11 @@ namespace Gladiator_Wars
 
         public static readonly int BOARD_HEIGHT = 9, BOARD_WIDTH = 16;
         // Queue of characters to determine play order
-        public Queue<Gladiator> unitsPlayOrder;
+
         public Scene _currentScene;
+        public ArrayList GUI;
+
+        public Queue<Gladiator> unitsPlayOrder;
         public Tile[,] Board;
 
         private Stack<Move> nextMoveStack;
@@ -29,6 +33,7 @@ namespace Gladiator_Wars
             gameMoves = new List<Move>();
             nextMoveStack = new Stack<Move>();
             unitsPlayOrder = new Queue<Gladiator>();
+            GUI = new ArrayList();
             initLevel();
         }
 

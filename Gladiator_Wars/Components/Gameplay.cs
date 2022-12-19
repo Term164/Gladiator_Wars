@@ -17,15 +17,16 @@ namespace Gladiator_Wars
         private PhysicsEngine _physicsEngine;
         private Level _currentLevel;
         private Renderer _renderer;
-
+        private GUIRenderer _guiRenderer;
 
         public Gameplay(Game game) : base(game)
         {
             _currentLevel = new Level(game);
-            _renderer = new Renderer(game, _currentLevel);
-            _physicsEngine = new PhysicsEngine(game, _currentLevel);
             player = new HumanPlayer(game, _currentLevel);
             player2 = new AIPlayer(game, _currentLevel);
+            _physicsEngine = new PhysicsEngine(game, _currentLevel);
+            _renderer = new Renderer(game, _currentLevel);
+            _guiRenderer = new GUIRenderer(game, _currentLevel);
 
             player.UpdateOrder = 0;
             player2.UpdateOrder = 1;
@@ -33,6 +34,7 @@ namespace Gladiator_Wars
             _currentLevel.UpdateOrder = 3;
             this.UpdateOrder = 4;
             _renderer.UpdateOrder = 5;
+            _guiRenderer.UpdateOrder = 6;
 
             // add components to game list
             game.Components.Add(player);
@@ -41,6 +43,7 @@ namespace Gladiator_Wars
             game.Components.Add(_currentLevel);
             game.Components.Add(this);
             game.Components.Add(_renderer);
+            game.Components.Add(_guiRenderer);
         }
 
         public override void Update(GameTime gameTime)

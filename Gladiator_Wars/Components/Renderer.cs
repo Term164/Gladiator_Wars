@@ -37,9 +37,7 @@ namespace Gladiator_Wars
 
         public override void Draw(GameTime gameTime)
         {
-
             int w = GraphicsDevice.Viewport.Width;
-
             SCALE = w / (float)((Level.BOARD_WIDTH) * Tile.TILE_SIZE);
 
             _spriteBatch.Begin(samplerState:SamplerState.PointClamp, transformMatrix:Matrix.CreateScale(SCALE));
@@ -60,6 +58,15 @@ namespace Gladiator_Wars
                         0,
                         new Vector2(0,0),
                         1,SpriteEffects.FlipHorizontally,0);
+                        continue;
+                    }
+                    else
+                    {
+                        _spriteBatch.Draw(
+                        entitySprite.texture,
+                        entity.position,
+                        entitySprite.sourceRectangle,
+                        Color.RosyBrown);
                         continue;
                     }
                 }
