@@ -14,7 +14,6 @@ namespace Gladiator_Wars
     {
 
         public static readonly int BOARD_HEIGHT = 9, BOARD_WIDTH = 16;
-        // Queue of characters to determine play order
 
         public Scene _currentScene;
         public ArrayList GUI;
@@ -157,6 +156,7 @@ namespace Gladiator_Wars
         private void attackUnit(Move unitMove) {
             unitMove.unit.attackPoint = false;
             unitMove.unit.attack(unitMove.endPos.unit);
+            GUIRenderer.damageText.resetDamage((unitMove.endPos.unit.position + new Vector2(16,0))*Renderer.SCALE, unitMove.unit.getDamageValue().ToString());
         }
 
         private void moveUnit(Move unitMove) {

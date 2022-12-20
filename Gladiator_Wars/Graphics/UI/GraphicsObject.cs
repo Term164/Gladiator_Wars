@@ -10,7 +10,7 @@ namespace Gladiator_Wars
         public Vector2 position;
         public Vector2 dimensions;
         public Color color;
-        Sprite sprite;
+        public Sprite sprite;
 
         public GraphicsObject(Vector2 position, Vector2 dimensions, Sprite sprite)
         {
@@ -28,22 +28,6 @@ namespace Gladiator_Wars
         public virtual void Update()
         {
 
-        }
-
-        public virtual bool Hover()
-        {
-            MouseState mouse = Mouse.GetState();
-            Vector2 mousePos = new Vector2(mouse.X, mouse.Y);
-
-            if (mousePos.X >= position.X
-                && mousePos.X <= position.X + dimensions.X * 4
-                && mousePos.Y >= position.Y
-                && mousePos.Y <= position.Y + dimensions.Y * 4)
-            {
-                return true;
-            }
-
-            return false;
         }
     }
 }
