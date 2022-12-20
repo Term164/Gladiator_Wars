@@ -80,7 +80,8 @@ namespace Gladiator_Wars.Components
             {
                 for (int y = 0; y < Level.BOARD_HEIGHT; y++)
                 {
-                    currentlevel.Board[x, y].tint = Color.SandyBrown;
+                    //currentlevel.Board[x, y].tint = Color.SandyBrown;
+                    currentlevel.Board[x, y].tint = Color.White;
                 }
             }
 

@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -45,9 +46,27 @@ namespace Gladiator_Wars
             {
                 for (int y = 0; y < BOARD_HEIGHT; y++)
                 {
-                    
-                    if(x == 0 || x == BOARD_WIDTH-1 || y == 0 || y == BOARD_HEIGHT-1) 
-                        Board[x, y] = new Wall(new Vector2(x * Tile.TILE_SIZE, y * Tile.TILE_SIZE), Board[x, y]);
+
+                    if (x == 0)
+                    {
+                        if (y == 0) Board[x, y] = new Wall(new Vector2(x * Tile.TILE_SIZE, y * Tile.TILE_SIZE), Board[x, y],0, true, new Vector2(0, 0));
+                        else if (y == BOARD_HEIGHT - 1) Board[x, y] = new Wall(new Vector2(x * Tile.TILE_SIZE, y * Tile.TILE_SIZE), Board[x, y], -MathF.PI/2, true, new Vector2(32, 0));
+                        else Board[x, y] = new Wall(new Vector2(x * Tile.TILE_SIZE, y * Tile.TILE_SIZE+32), Board[x, y], -MathF.PI / 2, false, new Vector2(0, 0));
+                    }
+                    else if (x == BOARD_WIDTH - 1)
+                    {
+                        if (y == 0) Board[x, y] = new Wall(new Vector2(x * Tile.TILE_SIZE, y * Tile.TILE_SIZE), Board[x, y], MathF.PI/2, true, new Vector2(0,32));
+                        else if (y == BOARD_HEIGHT -1 ) Board[x, y] = new Wall(new Vector2(x * Tile.TILE_SIZE, y * Tile.TILE_SIZE), Board[x, y], MathF.PI, true, new Vector2(32, 32));
+                        else Board[x, y] = new Wall(new Vector2(x * Tile.TILE_SIZE, y * Tile.TILE_SIZE+32), Board[x, y], MathF.PI / 2, false, new Vector2(32, 32));
+                    }
+                    else if (y == 0)
+                    {
+                        Board[x, y] = new Wall(new Vector2(x * Tile.TILE_SIZE, y * Tile.TILE_SIZE), Board[x, y], 0, false, new Vector2(0, 0));
+                    }
+                    else if (y == BOARD_HEIGHT - 1)
+                    {
+                        Board[x, y] = new Wall(new Vector2(x * Tile.TILE_SIZE, y * Tile.TILE_SIZE), Board[x, y], MathF.PI, false, new Vector2(32, 32));
+                    }
                     else
                         Board[x, y] = new Tile(new Vector2(x * Tile.TILE_SIZE, y * Tile.TILE_SIZE), Board[x,y]);
                     _currentScene.addItem(Board[x, y]);

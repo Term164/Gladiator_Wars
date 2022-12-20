@@ -28,9 +28,10 @@ namespace Gladiator_Wars
             Texture2D spriteSheetTexture = Game.Content.Load<Texture2D>("Assets/spritesheet");
 
             // Define all sprites for all drawable objects in the game;
-            spriteLookupDictionary["Gladiator"] = new Sprite(spriteSheetTexture, new Rectangle(1,102,32,32));
-            spriteLookupDictionary["Tile"] = new Sprite(spriteSheetTexture, new Rectangle(103, 69, 32, 32));
-            spriteLookupDictionary["Wall"] = new Sprite(spriteSheetTexture, new Rectangle(137,69,32,32));
+            spriteLookupDictionary["Gladiator"] = new Sprite(spriteSheetTexture, new Rectangle(2*32,3*32,32,32));
+            spriteLookupDictionary["Tile"] = new Sprite(spriteSheetTexture, new Rectangle(1*32, 3*32, 32, 32));
+            spriteLookupDictionary["Wall"] = new Sprite(spriteSheetTexture, new Rectangle(1*32,4*32,32,32));
+            spriteLookupDictionary["CornerWall"] = new Sprite(spriteSheetTexture, new Rectangle(0, 3 * 32, 32, 32));
 
             base.LoadContent();
         }
@@ -60,15 +61,20 @@ namespace Gladiator_Wars
                         1,SpriteEffects.FlipHorizontally,0);
                         continue;
                     }
-                    else
-                    {
-                        _spriteBatch.Draw(
+                }else if (entity is Wall)
+                {
+                    Wall wall = (Wall)entity;
+                    if (wall.isCorner) entitySprite = spriteLookupDictionary["CornerWall"];
+
+                    _spriteBatch.Draw(
                         entitySprite.texture,
-                        entity.position,
+                        wall.position,
                         entitySprite.sourceRectangle,
-                        Color.RosyBrown);
-                        continue;
-                    }
+                        wall.tint,
+                        wall.rotation,
+                        wall.origin,
+                        1,SpriteEffects.None, 0);
+                    continue;
                 }
                 
                 _spriteBatch.Draw(

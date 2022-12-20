@@ -10,8 +10,6 @@ namespace Gladiator_Wars
 
         public Tile(Vector2 position, Tile BoardPosition) : base(position, BoardPosition)
         {
-            base.tint = Color.SandyBrown;
-
         }
     }
 }
