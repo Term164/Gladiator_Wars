@@ -43,6 +43,7 @@ namespace Gladiator_Wars
 
         public Button(Vector2 positon, Vector2 dimensions, Sprite buttonSprite, Sprite iconSprite, float scale,PassObject BUTTONCLICKED, object INFO, bool toggleButton) : base(positon, dimensions, buttonSprite)
         {
+            ButtonClicked = BUTTONCLICKED;
             icon = iconSprite;
             isToggleButton = toggleButton;
             isPressed = false;
@@ -132,6 +133,7 @@ namespace Gladiator_Wars
             }
 
             if (isToggleButton) {
+                GUIRenderer.resetButtons();
                 isToggled = !isToggled;
             } 
 

@@ -107,6 +107,10 @@ namespace Gladiator_Wars
             return movePoint || attackPoint;
         }
 
+        public int getActionPoints()
+        {
+            return (attackPoint ? 1 : 0) + (movePoint ? 1 : 0);
+        }
           public void RemoveGladiator()
         {
             player.RemoveGladiator(this);

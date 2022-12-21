@@ -20,9 +20,11 @@ namespace Gladiator_Wars
             this.color = color;
         }
 
+        public void setText(string text) { this.text = text;}
+
         public override void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.DrawString(font, text, position*Renderer.SCALE, color);
+            spriteBatch.DrawString(font, text, position, color);
         }
     }
 }

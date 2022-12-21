@@ -19,6 +19,8 @@ namespace Gladiator_Wars
         {
             _currentLevel = level;
             spriteLookupDictionary = new Dictionary<string, Sprite>();
+
+            calculateScale();
         }
 
         protected override void LoadContent()
@@ -38,8 +40,7 @@ namespace Gladiator_Wars
 
         public override void Draw(GameTime gameTime)
         {
-            int w = GraphicsDevice.Viewport.Width;
-            SCALE = w / (float)((Level.BOARD_WIDTH) * Tile.TILE_SIZE);
+            calculateScale();
 
             _spriteBatch.Begin(samplerState:SamplerState.PointClamp, transformMatrix:Matrix.CreateScale(SCALE));
 
@@ -87,5 +88,12 @@ namespace Gladiator_Wars
             _spriteBatch.End();
             base.Draw(gameTime);
         }
+
+        private void calculateScale()
+        {
+            int w = GraphicsDevice.Viewport.Width;
+            SCALE = w / (float)((Level.BOARD_WIDTH) * Tile.TILE_SIZE);
+        }
+
     }
 }

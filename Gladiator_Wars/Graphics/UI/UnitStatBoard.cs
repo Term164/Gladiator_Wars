@@ -1,6 +1,8 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Gladiator_Wars.Components;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,7 +12,7 @@ namespace Gladiator_Wars
 {
     internal class UnitStatBoard : GraphicsObject
     {
-        Gladiator unit;
+        HumanPlayer player;
         SpriteFont font;
 
         Text HealthPoints;
@@ -18,31 +20,52 @@ namespace Gladiator_Wars
         Text MoveDistance;
         Text ArmourPoints;
         Text WeaponDamage;
+        Text ActionPoints;
 
         Background Background;
 
 
-        public UnitStatBoard(Vector2 position, Gladiator unit, SpriteFont font) : base(position, Vector2.Zero, null)
+        public UnitStatBoard(Vector2 position, HumanPlayer player, SpriteFont font) : base(position, Vector2.Zero, null)
         {
-            this.unit = unit;
+            this.player = player;
             this.font = font;
+
+            Gladiator unit = player.selectedUnit;
             Background = new Background(position, 4);
-            HealthPoints = new Text((position + new Vector2(10,2))*Renderer.SCALE,"HP: " + unit.healthPoints.ToString(),font,Color.White);
-            ExperiencePoints = new Text((position + new Vector2(10, 12)) * Renderer.SCALE, "XP: " + unit.experiencePoints.ToString(), font, Color.White);
-            MoveDistance = new Text((position + new Vector2(10, 22)) * Renderer.SCALE, "MP: " + unit.moveDistance.ToString(), font, Color.White);
-            ArmourPoints = new Text((position + new Vector2(42, 2)) * Renderer.SCALE, "AP: " + unit.ArmourPoints.ToString(), font, Color.White);
-            WeaponDamage = new Text((position + new Vector2(42, 12)) * Renderer.SCALE, "DMG: " + unit.getDamageValue().ToString(), font, Color.White);
+            HealthPoints = new Text(position + new Vector2(10,2) * Renderer.SCALE,"HP: " + unit.healthPoints,font,Color.White);
+            ExperiencePoints = new Text(position + new Vector2(10, 12) * Renderer.SCALE, "XP: " + unit.experiencePoints, font, Color.White);
+            WeaponDamage = new Text(position + new Vector2(10, 22) * Renderer.SCALE, "DMG: " + unit.getDamageValue(), font, Color.White);
+
+            ActionPoints = new Text(position + new Vector2(42, 2) * Renderer.SCALE, "Action points: " + unit.getActionPoints(), font, Color.White);
+            MoveDistance = new Text(position + new Vector2(42, 12) * Renderer.SCALE, "Move distance: " + unit.moveDistance, font, Color.White);
+            ArmourPoints = new Text(position + new Vector2(42, 22) * Renderer.SCALE, "Armour points: " + unit.ArmourPoints, font, Color.White);
         }
 
+        public void updateUnit()
+        {
+            if(player.selectedUnit != null) 
+            {
+                Gladiator unit = player.selectedUnit;
+                HealthPoints.setText("HP: " + unit.healthPoints);
+                ExperiencePoints.setText("XP: " + unit.experiencePoints);
+                WeaponDamage.setText("DMG: " + unit.getDamageValue());
+                ActionPoints.setText("Action points: " + unit.getActionPoints());
+                MoveDistance.setText("Move distance: " + unit.moveDistance);
+                ArmourPoints.setText("Armour points: " + unit.ArmourPoints);
+                
+            }
+
+        }
 
         public override void Draw(SpriteBatch spriteBatch)
         {
             Background.Draw(spriteBatch);
             HealthPoints.Draw(spriteBatch);
             ExperiencePoints.Draw(spriteBatch);
+            WeaponDamage.Draw(spriteBatch);
+            ActionPoints.Draw(spriteBatch);
             MoveDistance.Draw(spriteBatch);
             ArmourPoints.Draw(spriteBatch);
-            WeaponDamage.Draw(spriteBatch);
         }
     }
 }

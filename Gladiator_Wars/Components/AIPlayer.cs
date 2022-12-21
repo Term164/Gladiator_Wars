@@ -28,6 +28,12 @@ namespace Gladiator_Wars.Components
             base.Update(gameTime);
         }
 
+        public override void setActiveTile(Tile selectedTile)
+        {
+            base.setActiveTile(selectedTile);
+            possibleMoves = currentlevel.getUnitMoves(active);
+        }
+
         private void EvaluteBoard()
         {
             foreach(Gladiator gladiator in units)

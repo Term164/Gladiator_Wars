@@ -1,9 +1,6 @@
 ﻿using Gladiator_Wars.Components;
 using Gladiator_Wars.Infastructure;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -179,7 +176,7 @@ namespace Gladiator_Wars
         }
 
 
-        private List<Move> getAllUnitMovementMoves(Tile activeTile)
+        public List<Move> getAllUnitMovementMoves(Tile activeTile)
         {
             List<Move> possibleMoves = new List<Move>();
 
@@ -206,7 +203,7 @@ namespace Gladiator_Wars
             return possibleMoves;
         }
 
-        private List<Move> getAllUnitAttackMoves(Tile activeTile)
+        public List<Move> getAllUnitAttackMoves(Tile activeTile)
         {
             List<Move> possibleMoves = new List<Move>();
 

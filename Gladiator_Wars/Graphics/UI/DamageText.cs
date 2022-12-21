@@ -29,11 +29,6 @@ namespace Gladiator_Wars
             base.Update();
         }
 
-        public override void Draw(SpriteBatch spriteBatch)
-        {
-            spriteBatch.DrawString(font, text, position, color);
-        }
-
         public void resetDamage(Vector2 position, string text)
         {
             opacity = 1f;

@@ -1,11 +1,7 @@
 ﻿using Gladiator_Wars.Infastructure;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using System;
 using System.Collections.Generic;
-using System.Diagnostics;
+
 
 namespace Gladiator_Wars.Components
 {
@@ -41,7 +37,6 @@ namespace Gladiator_Wars.Components
             if (selectedTile.unit != null)
             {
                 active = selectedTile;
-                possibleMoves = currentlevel.getUnitMoves(active);
             }
         }
 

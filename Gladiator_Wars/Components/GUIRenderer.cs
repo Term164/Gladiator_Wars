@@ -1,11 +1,6 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Gladiator_Wars.Components;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Formats.Asn1.AsnWriter;
 
 namespace Gladiator_Wars
 
@@ -14,6 +9,7 @@ namespace Gladiator_Wars
     {
         private Level _level;
         private SpriteBatch _spriteBatch;
+
 
         // GUI SPRITES
         public static Sprite regularButtonSprite;
@@ -29,6 +25,12 @@ namespace Gladiator_Wars
 
 
         public static DamageText damageText;
+        public static UnitStatBoard unitStatBoard;
+
+        public static Button attackButton;
+        public static Button moveButton;
+        public static Button blockButton;
+        public static Button healButton;
 
         public GUIRenderer(Game game, Level level) : base(game)
         {
@@ -41,13 +43,14 @@ namespace Gladiator_Wars
 
             Texture2D spriteSheetTexture = Game.Content.Load<Texture2D>("Assets/spritesheet");
             SpriteFont font = Game.Content.Load<SpriteFont>("Assets/Main");
+            SpriteFont statFont = Game.Content.Load<SpriteFont>("Assets/stats");
 
             regularButtonSprite = new Sprite(spriteSheetTexture, new Rectangle(32, 43, 32, 11));
             
-            blockActionButtonSprite = new Sprite(spriteSheetTexture, new Rectangle(35, 35, 32, 32));
-            healActionButtonSprite = new Sprite(spriteSheetTexture, new Rectangle(35, 103, 32, 32));
+            blockActionButtonSprite = new Sprite(spriteSheetTexture, new Rectangle(2*32, 1*32, 32, 32));
+            healActionButtonSprite = new Sprite(spriteSheetTexture, new Rectangle(3*32, 3*32, 32, 32));
             attackActionButtonSprite = new Sprite(spriteSheetTexture, new Rectangle(3*32, 2*32, 32, 32));
-            moveActionButtonSprite = new Sprite(spriteSheetTexture, new Rectangle(137, 35, 32, 32));
+            moveActionButtonSprite = new Sprite(spriteSheetTexture, new Rectangle(4*32, 3 * 32, 32, 32));
             defaultActionButton = new Sprite(spriteSheetTexture, new Rectangle(2*32,0,32,32));
 
             backgroundSpriteCenter = new Sprite(spriteSheetTexture, new Rectangle(67,0,25,32));
@@ -63,10 +66,33 @@ namespace Gladiator_Wars
             //_level.GUI.Add(new Button(new Vector2(0,0), new Vector2(32,32),blockActionButtonSprite, font, "", null, null, false));
             //_level.GUI.Add(new Button(new Vector2(400,400), new Vector2(32,32), defaultActionButton, attackActionButtonSprite, 1, null, null, true));
             //_level.GUI.Add(new Text(new Vector2(400,400),"test", font, Color.Green));
-            _level.GUI.Add(new UnitStatBoard(new Vector2(0, (Level.BOARD_HEIGHT - 1) * 32),_level.player1.active.unit,font));
+
+            HumanPlayer player = (HumanPlayer)_level.player1;
+
+            attackButton = new Button(new Vector2(Tile.TILE_SIZE * 5 * Renderer.SCALE, Tile.TILE_SIZE * (Level.BOARD_HEIGHT - 1) * Renderer.SCALE + 5), new Vector2(32, 32), defaultActionButton, attackActionButtonSprite, 3, player.getUnitAttackOptions, null, true);
+            blockButton = new Button(new Vector2(Tile.TILE_SIZE * 6 * Renderer.SCALE, Tile.TILE_SIZE * (Level.BOARD_HEIGHT - 1) * Renderer.SCALE + 5), new Vector2(32, 32), defaultActionButton, blockActionButtonSprite, 3, null, null, false);
+            healButton = new Button(new Vector2(Tile.TILE_SIZE * 7 * Renderer.SCALE, Tile.TILE_SIZE * (Level.BOARD_HEIGHT - 1) * Renderer.SCALE + 5), new Vector2(32, 32), defaultActionButton, healActionButtonSprite, 3, null, null, true);
+            moveButton = new Button(new Vector2(Tile.TILE_SIZE * 8 * Renderer.SCALE, Tile.TILE_SIZE * (Level.BOARD_HEIGHT - 1) * Renderer.SCALE + 5), new Vector2(32, 32), defaultActionButton, moveActionButtonSprite, 3, player.getUnitMoveOptions, null, true);
+            _level.GUI.Add(attackButton);
+            _level.GUI.Add(blockButton);
+            _level.GUI.Add(healButton);
+            _level.GUI.Add(moveButton);
+
+            unitStatBoard = new UnitStatBoard(new Vector2(Tile.TILE_SIZE * Renderer.SCALE, Tile.TILE_SIZE * (Level.BOARD_HEIGHT - 1) * Renderer.SCALE - 5), player, statFont);
+
+
+
+            _level.GUI.Add(unitStatBoard);
 
             base.LoadContent();
-        }        
+        }
+
+        public static void resetButtons()
+        {
+            attackButton.isToggled = false;
+            moveButton.isToggled = false;
+            healButton.isToggled = false;
+        }
 
         public override void Update(GameTime gameTime)
         {

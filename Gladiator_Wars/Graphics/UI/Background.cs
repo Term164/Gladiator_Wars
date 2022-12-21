@@ -20,14 +20,14 @@ namespace Gladiator_Wars
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(GUIRenderer.backgroundSpriteLeft.texture, position * Renderer.SCALE, GUIRenderer.backgroundSpriteLeft.sourceRectangle, color, 0, Vector2.Zero, 4, SpriteEffects.None, 0);
+            spriteBatch.Draw(GUIRenderer.backgroundSpriteLeft.texture, position, GUIRenderer.backgroundSpriteLeft.sourceRectangle, color, 0, Vector2.Zero, Renderer.SCALE, SpriteEffects.None, 0);
 
             for(int i = 1; i <= size; i++)
             {
-                spriteBatch.Draw(GUIRenderer.backgroundSpriteCenter.texture, (position + new Vector2(dimensions.X - 4 - i*25, 0)) * Renderer.SCALE, GUIRenderer.backgroundSpriteCenter.sourceRectangle,color, 0, Vector2.Zero, 4, SpriteEffects.None, 0);
+                spriteBatch.Draw(GUIRenderer.backgroundSpriteCenter.texture, position + new Vector2(dimensions.X - 4 - i*25, 0) * new Vector2(Renderer.SCALE,1), GUIRenderer.backgroundSpriteCenter.sourceRectangle,color, 0, Vector2.Zero, Renderer.SCALE, SpriteEffects.None, 0);
             }
 
-            spriteBatch.Draw(GUIRenderer.backgroundSpriteRight.texture, (position + new Vector2(dimensions.X-4,0)) * Renderer.SCALE, GUIRenderer.backgroundSpriteRight.sourceRectangle, color, 0, Vector2.Zero, 4, SpriteEffects.None, 0);
+            spriteBatch.Draw(GUIRenderer.backgroundSpriteRight.texture, position + new Vector2(dimensions.X-4,0) * new Vector2(Renderer.SCALE, 1), GUIRenderer.backgroundSpriteRight.sourceRectangle, color, 0, Vector2.Zero, Renderer.SCALE, SpriteEffects.None, 0);
         }
     }
 }

@@ -32,3 +32,10 @@
 /processorParam:TextureFormat=Color
 /build:Assets/spritesheet.png
 
+#begin Assets/stats.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Assets/stats.spritefont
+

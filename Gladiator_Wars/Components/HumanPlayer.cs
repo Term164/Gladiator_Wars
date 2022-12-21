@@ -1,19 +1,23 @@
 ﻿using Gladiator_Wars.Infastructure;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Gladiator_Wars.Components
 {
+    enum PLAYER_STATE
+    {
+        ATTACK,
+        MOVE,
+        HEAL,
+        DEFAULT
+    }
+
     internal class HumanPlayer : Player
     {
         MouseState mouse;
         MouseState previousMouseState;
+        public Gladiator selectedUnit;
+        PLAYER_STATE CURRENT_STATE = PLAYER_STATE.DEFAULT;
 
         public HumanPlayer(Game game, Level level) : base(game, level) {
             Gladiator gladiator =  CreateNewGladiator(1,1);
@@ -40,27 +44,26 @@ namespace Gladiator_Wars.Components
 
         private void boardClick(Vector2 boardClickPosition) {
             Tile selectedTile = currentlevel.Board[(int)boardClickPosition.X, (int)boardClickPosition.Y];
-
-            // TODO: Remove this if once the UI is established
-            foreach (Move move in possibleMoves)
+            
+            if(CURRENT_STATE == PLAYER_STATE.DEFAULT)
             {
-                if (move.endPos == selectedTile) {
-                    makeMove(move);
-                    break;
+                if(selectedTile.unit != null)
+                {
+                    selectedUnit = selectedTile.unit;
+                    GUIRenderer.unitStatBoard.updateUnit();
                 }
             }
-
-            //if (active == null) setActiveTile(selectedTile);
-            //else {
-            //    if (active == selectedTile)
-            //    {
-            //        //resetActiveTile();
-            //    }
-            //    else if (possibleMoves.Contains(selectedTile))
-            //    {
-            //        makeMove(selectedTile);
-            //    }
-            //}
+            else
+            {
+                foreach (Move move in possibleMoves)
+                {
+                    if (move.endPos == selectedTile)
+                    {
+                        makeMove(move);
+                        break;
+                    }
+                }
+            }
 
             updateTilesColor();
         }
@@ -69,9 +72,55 @@ namespace Gladiator_Wars.Components
         public override void setActiveTile(Tile tile)
         {
             base.setActiveTile(tile);
+            selectedUnit = tile.unit;
+            resetState();
+            updateTilesColor();
+            if (GUIRenderer.unitStatBoard != null) {
+                GUIRenderer.resetButtons();
+                GUIRenderer.unitStatBoard.updateUnit();
+            }
+            
+        }
+
+        public virtual void getUnitMoveOptions(object INFO)
+        {
+            if (CURRENT_STATE == PLAYER_STATE.MOVE)
+                resetState();
+            else
+            {
+                CURRENT_STATE = PLAYER_STATE.MOVE;
+                possibleMoves = currentlevel.getAllUnitMovementMoves(active);
+            }
             updateTilesColor();
         }
 
+        public virtual void getUnitAttackOptions(object INFO)
+        {
+            if (CURRENT_STATE == PLAYER_STATE.ATTACK)
+                resetState();
+            else
+            {
+                CURRENT_STATE = PLAYER_STATE.ATTACK;
+                possibleMoves = currentlevel.getAllUnitAttackMoves(active);
+            }
+            updateTilesColor();
+        }
+
+        public void unitBlock()
+        {
+
+        }
+
+        public void getUnitHealOptions()
+        {
+
+        }
+
+        private void resetState()
+        {
+            CURRENT_STATE = PLAYER_STATE.DEFAULT;
+            possibleMoves = null;
+        }
 
         private void updateTilesColor() {
 
@@ -94,6 +143,8 @@ namespace Gladiator_Wars.Components
                     else move.endPos.tint = Color.Green;
                 }
             }
+
+            selectedUnit.boardPosition.tint = Color.Purple;
             
 
         }
