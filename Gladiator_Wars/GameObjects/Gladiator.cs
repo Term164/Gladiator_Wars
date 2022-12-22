@@ -57,6 +57,9 @@ namespace Gladiator_Wars
         }
         
         public Gladiator(Vector2 position, Tile boardPosition, Player player) : base(position, boardPosition){
+            
+            tint = Color.RosyBrown; //TODO: Randomise gladiator skin color
+
             this.player = player;
             player.units.Add(this);
             weapon = new Hands();
@@ -129,6 +132,7 @@ namespace Gladiator_Wars
 
                 if (Vector2.Distance(position, (Vector2)nextNode.position) < 2)
                 {
+                    position = nextNode.position;
                     nextNode = null;
                 }
             }

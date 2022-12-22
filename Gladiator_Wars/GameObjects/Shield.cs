@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,6 +15,9 @@ namespace Gladiator_Wars
         public int durability;
         public int armourPoints;
         public Quality quality;
+        public Color tint = Color.White;
+        public Vector2 offsetRight;
+        public Vector2 offsetLeft;
 
         public void setShieldQuality(Quality quality)
         {

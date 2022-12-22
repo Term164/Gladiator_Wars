@@ -30,10 +30,27 @@ namespace Gladiator_Wars
             Texture2D spriteSheetTexture = Game.Content.Load<Texture2D>("Assets/spritesheet");
 
             // Define all sprites for all drawable objects in the game;
-            spriteLookupDictionary["Gladiator"] = new Sprite(spriteSheetTexture, new Rectangle(2*32,3*32,32,32));
-            spriteLookupDictionary["Tile"] = new Sprite(spriteSheetTexture, new Rectangle(1*32, 3*32, 32, 32));
-            spriteLookupDictionary["Wall"] = new Sprite(spriteSheetTexture, new Rectangle(1*32,4*32,32,32));
+            spriteLookupDictionary["Gladiator"] = new Sprite(spriteSheetTexture, new Rectangle(2 * 32, 3 * 32, 32, 32));
+            spriteLookupDictionary["Tile"] = new Sprite(spriteSheetTexture, new Rectangle(1 * 32, 3 * 32, 32, 32));
+            spriteLookupDictionary["Wall"] = new Sprite(spriteSheetTexture, new Rectangle(1 * 32, 4 * 32, 32, 32));
             spriteLookupDictionary["CornerWall"] = new Sprite(spriteSheetTexture, new Rectangle(0, 3 * 32, 32, 32));
+
+            // Armour Sprites
+            spriteLookupDictionary["HeavyArmour"] = new Sprite(spriteSheetTexture, new Rectangle(4 * 32, 2 * 32, 32, 32));
+            spriteLookupDictionary["MediumArmour"] = new Sprite(spriteSheetTexture, new Rectangle(4 * 32, 0, 32, 32));
+            spriteLookupDictionary["LightArmour"] = new Sprite(spriteSheetTexture, new Rectangle(4 * 32, 1 * 32, 32, 32));
+
+            // Weapon Sprites
+            spriteLookupDictionary["Axe"] = new Sprite(spriteSheetTexture, new Rectangle(32, 0, 31, 32));
+            spriteLookupDictionary["Bow"] = new Sprite(spriteSheetTexture, new Rectangle(0, 32, 32, 32));
+            spriteLookupDictionary["Hands"] = new Sprite(spriteSheetTexture, new Rectangle(0, 0, 0, 0));
+            spriteLookupDictionary["Spear"] = new Sprite(spriteSheetTexture, new Rectangle(32, 2 * 32, 32, 32));
+            spriteLookupDictionary["Sword"] = new Sprite(spriteSheetTexture, new Rectangle(2 * 32, 2 * 32, 32, 32));
+
+            //Shield Sprites
+            spriteLookupDictionary["SmallShield"] = new Sprite(spriteSheetTexture, new Rectangle(0, 2 * 32, 32, 32));
+            spriteLookupDictionary["BigShield"] = new Sprite(spriteSheetTexture, new Rectangle(3 * 32, 1 * 32, 32, 32));
+
 
             base.LoadContent();
         }
@@ -50,44 +67,112 @@ namespace Gladiator_Wars
 
                 if(entity is Gladiator)
                 {
-                    if (((Gladiator)entity).player is HumanPlayer)
-                    {
-                        _spriteBatch.Draw(
-                        entitySprite.texture,
-                        entity.position,
-                        entitySprite.sourceRectangle,
-                        entity.tint,
-                        0,
-                        new Vector2(0,0),
-                        1,SpriteEffects.FlipHorizontally,0);
-                        continue;
-                    }
+                    RenderGladiator((Gladiator)entity);
                 }else if (entity is Wall)
                 {
-                    Wall wall = (Wall)entity;
-                    if (wall.isCorner) entitySprite = spriteLookupDictionary["CornerWall"];
-
+                    RenderWall((Wall) entity);
+                }
+                else {
                     _spriteBatch.Draw(
+                    entitySprite.texture,
+                    entity.position,
+                    entitySprite.sourceRectangle,
+                    entity.tint);
+                }
+            }
+
+            _spriteBatch.End();
+            base.Draw(gameTime);
+        }
+
+        private void RenderWall(Wall wall)
+        {
+            Sprite entitySprite;
+            if (wall.isCorner) entitySprite = spriteLookupDictionary["CornerWall"];
+            else entitySprite = spriteLookupDictionary["Wall"];
+
+            _spriteBatch.Draw(
                         entitySprite.texture,
                         wall.position,
                         entitySprite.sourceRectangle,
                         wall.tint,
                         wall.rotation,
                         wall.origin,
-                        1,SpriteEffects.None, 0);
-                    continue;
-                }
-                
-                _spriteBatch.Draw(
-                entitySprite.texture,
-                entity.position,
-                entitySprite.sourceRectangle,
-                entity.tint);
-            }
-
-            _spriteBatch.End();
-            base.Draw(gameTime);
+                        1, SpriteEffects.None, 0);
         }
+
+        private void RenderGladiator(Gladiator gladiator)
+        {
+            Sprite entitySprite = spriteLookupDictionary["Gladiator"];
+            SpriteEffects team = gladiator.player is HumanPlayer ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+
+            
+
+            _spriteBatch.Draw(
+                entitySprite.texture,
+                gladiator.position,
+                entitySprite.sourceRectangle,
+                gladiator.tint,
+                0,
+                new Vector2(0, 0),
+                1, team, 0);
+
+            if (gladiator.armour != null) RenderArmour(gladiator, team);
+            if (gladiator.weapon != null) RenderWeapon(gladiator, team);
+            if (gladiator.shield != null) RenderShield(gladiator, team);
+        }
+
+        private void RenderArmour(Gladiator gladiator, SpriteEffects team)
+        {
+            Sprite entitySprite = spriteLookupDictionary[gladiator.armour.GetType().Name];
+
+            _spriteBatch.Draw(
+                entitySprite.texture,
+                gladiator.position,
+                entitySprite.sourceRectangle,
+                gladiator.armour.tint,
+                0,
+                new Vector2(0, 0),
+                1, team, 0);
+        }
+
+        private void RenderWeapon(Gladiator gladiator, SpriteEffects team)
+        {
+            float rotation = 0;
+            if(gladiator.weapon is Spear) {
+                rotation = team == SpriteEffects.FlipHorizontally ? 0 : -MathF.PI + MathF.PI/10;
+            }else if(gladiator.weapon is Bow){
+                rotation = team == SpriteEffects.FlipHorizontally ? 0 : -MathF.PI;
+            }
+            
+            Sprite entitySprite = spriteLookupDictionary[gladiator.weapon.GetType().Name];
+            Vector2 offset = team == SpriteEffects.FlipHorizontally ? gladiator.weapon.offsetRight : gladiator.weapon.offsetLeft;
+
+            _spriteBatch.Draw(
+                entitySprite.texture,
+                gladiator.position + offset,
+                entitySprite.sourceRectangle,
+                gladiator.weapon.tint,
+                gladiator.weapon.rotation + rotation,
+                new Vector2(0, 0),
+                0.8f, SpriteEffects.None, 0);
+        }
+
+        private void RenderShield(Gladiator gladiator, SpriteEffects team)
+        {
+            Sprite entitySprite = spriteLookupDictionary[gladiator.shield.GetType().Name];
+            Vector2 offset = team == SpriteEffects.FlipHorizontally ? gladiator.shield.offsetRight : gladiator.shield.offsetLeft;
+
+            _spriteBatch.Draw(
+                entitySprite.texture,
+                gladiator.position + offset,
+                entitySprite.sourceRectangle,
+                gladiator.shield.tint,
+                0,
+                new Vector2(0, 0),
+                0.8f, SpriteEffects.None, 0);
+        }
+
 
         private void calculateScale()
         {

@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.Xna.Framework;
 
 namespace Gladiator_Wars
 {
     internal class Bow : Weapon
     {
         public Bow(Quality quality) {
+            offsetRight = new Vector2(12, 6);
+            offsetLeft = new Vector2(20, 32);
             type = WeaponType.Ranged;
             range = 4;
             weight = 5;

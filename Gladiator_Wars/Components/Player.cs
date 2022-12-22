@@ -1,4 +1,5 @@
-﻿using Gladiator_Wars.Infastructure;
+﻿using Gladiator_Wars.GameObjects;
+using Gladiator_Wars.Infastructure;
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 
@@ -55,6 +56,9 @@ namespace Gladiator_Wars.Components
         public Gladiator CreateNewGladiator(int boardX, int boardY)
         {
             Gladiator unit = new Gladiator(new Vector2(boardX * Tile.TILE_SIZE, boardY * Tile.TILE_SIZE), currentlevel.Board[boardX,boardY], this);
+            unit.armour = new LightArmour(Quality.common);
+            unit.weapon = new Sword(Quality.common);
+            unit.shield = new BigShield(Quality.common);
             currentlevel.Board[boardX, boardY].unit = unit;
             currentlevel._currentScene.addItem(unit);
             return unit;

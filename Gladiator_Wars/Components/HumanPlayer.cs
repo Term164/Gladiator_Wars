@@ -22,9 +22,12 @@ namespace Gladiator_Wars.Components
         public HumanPlayer(Game game, Level level) : base(game, level) {
             Gladiator gladiator =  CreateNewGladiator(1,1);
             gladiator.Athletics = 10;
+            gladiator.weapon = new Axe(Quality.common);
+            gladiator.armour = new HeavyArmour(Quality.common);
 
             gladiator = CreateNewGladiator(2, 2);
             gladiator.Athletics = 5;
+            gladiator.armour = new MediumArmour(Quality.common);
         }
 
         public override void Update(GameTime gameTime)

@@ -1,24 +1,32 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace Gladiator_Wars
 {
-    internal class GladiatorFactory
+    enum Difficulty
     {
-        enum Difficulty{
-            easy,
-            medium,
-            hard,
-            boss,
+        easy,
+        medium,
+        hard,
+        boss,
+    }
+
+    internal class GladiatorFactory
+    {    
+
+        public GladiatorFactory()
+        {
+
         }
 
-        //public static Gladiator(Difficulty difficulty, WeaponType type)
-        //{
-            
-        //}
+        public Gladiator generateNewGladiator(Difficulty difficulty)
+        {
+            return null;
+        }
+
+        public List<Gladiator> generateGladiatorList(List<Difficulty> difficultyList) {
+            return null;
+        }
+
 
     }
 }

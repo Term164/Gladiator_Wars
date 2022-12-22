@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿using Microsoft.Xna.Framework;
+using System;
 namespace Gladiator_Wars
 {
     public enum Quality
@@ -20,7 +16,7 @@ namespace Gladiator_Wars
         Hybrid
     }
 
-    internal class Weapon : GameObject
+    internal class Weapon
     {
         private static Random random = new Random();
         public int damage;
@@ -29,6 +25,11 @@ namespace Gladiator_Wars
         public int range;
         public WeaponType type;
         public Quality quality;
+
+        public Color tint = Color.White;
+        public float rotation = 0;
+        public Vector2 offsetRight;
+        public Vector2 offsetLeft;
 
         public void setWeaponQuality(Quality quality)
         {

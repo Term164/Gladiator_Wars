@@ -13,7 +13,6 @@ namespace Gladiator_Wars
     internal class UnitStatBoard : GraphicsObject
     {
         HumanPlayer player;
-        SpriteFont font;
 
         Text HealthPoints;
         Text ExperiencePoints;
@@ -28,7 +27,6 @@ namespace Gladiator_Wars
         public UnitStatBoard(Vector2 position, HumanPlayer player, SpriteFont font) : base(position, Vector2.Zero, null)
         {
             this.player = player;
-            this.font = font;
 
             Gladiator unit = player.selectedUnit;
             Background = new Background(position, 4);
