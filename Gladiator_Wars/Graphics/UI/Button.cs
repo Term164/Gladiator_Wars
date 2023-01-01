@@ -38,7 +38,9 @@ namespace Gladiator_Wars
             isToggled = false;
             hoverColor = new Color(200, 230, 255);
             isToggleButton = toggleButton;
-            scale = 4;
+            scale = 8;
+            size = scale;
+            //size = 4;
         }
 
         public Button(Vector2 positon, Vector2 dimensions, Sprite buttonSprite, Sprite iconSprite, float scale,PassObject BUTTONCLICKED, object INFO, bool toggleButton) : base(positon, dimensions, buttonSprite)
@@ -52,7 +54,7 @@ namespace Gladiator_Wars
             hoverColor = new Color(200, 230, 255);
         }
 
-        public override void Update()
+        public override void Update(GameTime gameTime)
         {
             mouse = Mouse.GetState();
             if (Hover())
@@ -83,7 +85,7 @@ namespace Gladiator_Wars
 
             previousMouseState = mouse;
 
-            base.Update();
+            base.Update(gameTime);
         }
 
         public override void Draw(SpriteBatch spriteBatch)
@@ -97,7 +99,7 @@ namespace Gladiator_Wars
             else {
                 base.Draw(spriteBatch);
                 Vector2 stringDimensions = font.MeasureString(text);
-                spriteBatch.DrawString(font, text, position + new Vector2(dimensions.X * Renderer.SCALE / 2 - stringDimensions.X / 2 + 6, dimensions.Y * Renderer.SCALE / 2 - stringDimensions.Y / 2 + 2), Color.Black);
+                spriteBatch.DrawString(font, text, position + new Vector2(dimensions.X * scale / 2 - stringDimensions.X / 2, dimensions.Y * scale / 2 - stringDimensions.Y / 2 + 2), Color.Black);
             }
             
         }
@@ -133,8 +135,8 @@ namespace Gladiator_Wars
             }
 
             if (isToggleButton) {
-                GUIRenderer.resetButtons();
                 isToggled = !isToggled;
+                GUIRenderer.resetButtons();
             } 
 
             Reset();
@@ -146,9 +148,9 @@ namespace Gladiator_Wars
             Vector2 mousePos = new Vector2(mouse.X, mouse.Y);
 
             if (mousePos.X >= position.X
-                && mousePos.X <= position.X + dimensions.X * scale
+                && mousePos.X <= position.X + dimensions.X * size
                 && mousePos.Y >= position.Y
-                && mousePos.Y <= position.Y + dimensions.Y * scale)
+                && mousePos.Y <= position.Y + dimensions.Y * size)
             {
                 return true;
             }

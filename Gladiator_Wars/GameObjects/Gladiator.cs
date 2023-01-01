@@ -56,7 +56,7 @@ namespace Gladiator_Wars
             set { _velocity = value; }
         }
         
-        public Gladiator(Vector2 position, Tile boardPosition, Player player) : base(position, boardPosition){
+        public Gladiator(Tile boardPosition, Player player) : base(boardPosition.position, boardPosition){
             
             tint = Color.RosyBrown; //TODO: Randomise gladiator skin color
 

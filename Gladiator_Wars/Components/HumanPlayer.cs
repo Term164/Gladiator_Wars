@@ -99,7 +99,8 @@ namespace Gladiator_Wars.Components
 
         public virtual void getUnitAttackOptions(object INFO)
         {
-            if (CURRENT_STATE == PLAYER_STATE.ATTACK)
+
+            if (CURRENT_STATE == PLAYER_STATE.ATTACK || !active.unit.attackPoint)
                 resetState();
             else
             {

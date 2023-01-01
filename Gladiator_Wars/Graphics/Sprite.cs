@@ -14,5 +14,7 @@ namespace Gladiator_Wars
             this.texture = texture;
             this.sourceRectangle = sourceRectangle;
         }   
+
+        public virtual void Update(GameTime gameTime) { }
     }
 }

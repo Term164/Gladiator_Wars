@@ -7,6 +7,14 @@ using System.Collections.Generic;
 
 namespace Gladiator_Wars
 {
+    public enum GameState
+    {
+        MainMenu,
+        HowToPlay,
+        Leveling,
+        Level
+    }
+
     internal class Level : GameComponent
     {
 
@@ -23,6 +31,8 @@ namespace Gladiator_Wars
 
         public Player player1;
         public Player player2;
+
+        public GameState levelGameState = GameState.MainMenu;
 
         public Level(Game game) : base(game)
         {
@@ -206,6 +216,7 @@ namespace Gladiator_Wars
         public List<Move> getAllUnitAttackMoves(Tile activeTile)
         {
             List<Move> possibleMoves = new List<Move>();
+
 
             for (int x = -activeTile.unit.weapon.range; x <= activeTile.unit.weapon.range; x++)
             {

@@ -13,7 +13,7 @@ namespace Gladiator_Wars
             isActive = false;
         }
 
-        public override void Update()
+        public override void Update(GameTime gameTime)
         {
             if (isActive) {
                 opacity -= 0.01f;
@@ -26,7 +26,7 @@ namespace Gladiator_Wars
                 isActive = false;
             }
 
-            base.Update();
+            base.Update(gameTime);
         }
 
         public void resetDamage(Vector2 position, string text)

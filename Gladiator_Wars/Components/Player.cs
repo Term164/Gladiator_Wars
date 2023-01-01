@@ -55,7 +55,7 @@ namespace Gladiator_Wars.Components
 
         public Gladiator CreateNewGladiator(int boardX, int boardY)
         {
-            Gladiator unit = new Gladiator(new Vector2(boardX * Tile.TILE_SIZE, boardY * Tile.TILE_SIZE), currentlevel.Board[boardX,boardY], this);
+            Gladiator unit = new Gladiator(currentlevel.Board[boardX,boardY], this);
             unit.armour = new LightArmour(Quality.common);
             unit.weapon = new Sword(Quality.common);
             unit.shield = new BigShield(Quality.common);
