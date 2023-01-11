@@ -41,6 +41,7 @@ namespace Gladiator_Wars
         public ArrayList MainMenu;
         public ArrayList LevelUI;
         public ArrayList RulesMenu;
+        public ArrayList SettingsMenu;
 
         public GUIRenderer(Game game, Level level) : base(game)
         {
@@ -48,6 +49,8 @@ namespace Gladiator_Wars
             player = (HumanPlayer)_level.player1;
             MainMenu = new ArrayList();
             LevelUI = new ArrayList();
+            RulesMenu = new ArrayList();
+            SettingsMenu = new ArrayList();
         }
 
         protected override void LoadContent()
@@ -84,10 +87,76 @@ namespace Gladiator_Wars
 
             CreateMainMenu();
             CreateLevelUI();
+            CreateRulesMenu();
+            CreateSettingsMenu();
 
             _level.GUI = MainMenu;
 
             base.LoadContent();
+            SoundManager.PlayBackgroundMusic();
+        }
+
+        private void CreateRulesMenu()
+        {
+            int screenWidth = GraphicsDevice.Viewport.Width;
+
+            GraphicsObject background = new GraphicsObject(new Vector2(0, 0), new Vector2(1200, 720), menuBackgroundSprite);
+            background.size = 1.6f;
+            background.color = Color.Gray;
+            RulesMenu.Add(background);
+
+            // Menu Title
+            string title = "RULES";
+            Vector2 titleSize = MenuFont.MeasureString(title);
+            RulesMenu.Add(new Text(new Vector2(screenWidth / 2 - titleSize.X / 2, 20), title, MenuFont, Color.White));
+
+            string descriptionString = "DESCRIPTION:\n\nGladiator wars is a turn based strategy game with roguelike elements.\nIt is heavily inspired by the game Battle Brothers and focuses on the figthing part of the game.";
+            RulesMenu.Add(new Text(new Vector2(screenWidth / 4, 200), descriptionString, statFont, Color.White));
+
+            string rulesString = "HOW TO PLAY:\n\n" +
+                                 "Gladiator wars is a single player turn based strategy game\n" +
+                                 "where you and the AI take turns controlling their gladiators.\n\n" +
+                                 "Each gladiator has 2 action points that can be used to attack, move, block or heal.\n" +
+                                 "Moving costs 1 action point and is limited by the gladiator characteristics.\n" +
+                                 "Attacking costs 1 action point but can only be used once per turn.\n" +
+                                 "Blocking costs 1 action point and it immediatly ends your turn.\n" +
+                                 "Healing also costs one turn but does not end your turn (heal ally or yourself).\n" +
+                                 "There is also a skip option if you just want to skip that turn.\n\n" +
+                                 "Gladiator turn order is determined by the initative and weight of each gladiator.\n" +
+                                 "Each player must finish the turn of the current gladiator before using another.";
+            RulesMenu.Add(new Text(new Vector2(screenWidth / 4, 320), rulesString, statFont, Color.White));
+
+            Button backButton = new Button(new Vector2(screenWidth / 2 - 32 * 4, 768), new Vector2(32, 11), regularButtonSprite, font, "Back", backToMainMenu, null, false);
+            backButton.size = 8;
+            RulesMenu.Add(backButton);
+
+        }
+
+        private void CreateSettingsMenu()
+        {
+            int screenWidth = GraphicsDevice.Viewport.Width;
+
+            GraphicsObject background = new GraphicsObject(new Vector2(0, 0), new Vector2(1200, 720), menuBackgroundSprite);
+            background.size = 1.6f;
+            background.color = Color.Gray;
+            SettingsMenu.Add(background);
+
+            // Menu Title
+            string title = "SETTINGS";
+            Vector2 titleSize = MenuFont.MeasureString(title);
+            SettingsMenu.Add(new Text(new Vector2(screenWidth / 2 - titleSize.X / 2, 20), title, MenuFont, Color.White));
+
+            string descriptionString = "VOLUME:";
+            SettingsMenu.Add(new Text(new Vector2(screenWidth / 4, 200), descriptionString, statFont, Color.White));
+
+            Button toggleVolume = new Button(new Vector2(screenWidth / 4 + 100, 200 - 8), new Vector2(32, 32), defaultActionButton, healActionButtonSprite, 1, null, null, true);
+            toggleVolume.defaultColor = Color.Red;
+            SettingsMenu.Add(toggleVolume);
+
+            Button backButton = new Button(new Vector2(screenWidth / 2 - 32 * 4, 768), new Vector2(32, 11), regularButtonSprite, font, "Back", backToMainMenu, null, false);
+            backButton.size = 8;
+            SettingsMenu.Add(backButton);
+
         }
 
         private void CreateMainMenu()
@@ -108,23 +177,48 @@ namespace Gladiator_Wars
             continueButton.size = 8;
             MainMenu.Add(continueButton);
 
-            Button newGameButton = new Button(new Vector2(screenWidth / 2 - 32 * 4, 384), new Vector2(32, 11), regularButtonSprite, font, "New Game", null, null, false);
+            Button newGameButton = new Button(new Vector2(screenWidth / 2 - 32 * 4, 384), new Vector2(32, 11), regularButtonSprite, font, "New Game", startNewGame, null, false);
             newGameButton.size = 8;
             MainMenu.Add(newGameButton);
 
-            Button howToPlayButton = new Button(new Vector2(screenWidth / 2 - 32 * 4, 512), new Vector2(32, 11), regularButtonSprite, font, "Guide", null, null, false);
+            Button howToPlayButton = new Button(new Vector2(screenWidth / 2 - 32 * 4, 512), new Vector2(32, 11), regularButtonSprite, font, "Rules", switchToRules, null, false);
             howToPlayButton.size = 8;
             MainMenu.Add(howToPlayButton);
 
-            Button settingsButton = new Button(new Vector2(screenWidth / 2 - 32 * 4, 640), new Vector2(32, 11), regularButtonSprite, font, "Settings", null, null, false);
+            Button settingsButton = new Button(new Vector2(screenWidth / 2 - 32 * 4, 640), new Vector2(32, 11), regularButtonSprite, font, "Settings", openSettingsMenu, null, false);
             settingsButton.size = 8;
             MainMenu.Add(settingsButton);
 
-            Button exitButton = new Button(new Vector2(screenWidth / 2 - 32 * 4, 768), new Vector2(32, 11), regularButtonSprite, font, "Exit", null, null, false);
+            Button exitButton = new Button(new Vector2(screenWidth / 2 - 32 * 4, 768), new Vector2(32, 11), regularButtonSprite, font, "Exit", exitGame, null, false);
             exitButton.size = 8;
             MainMenu.Add(exitButton);
 
 
+        }
+
+        public virtual void startNewGame(object INFO)
+        {
+            _level.GUI = LevelUI;
+        }
+
+        public virtual void openSettingsMenu(object INFO)
+        {
+            _level.GUI = SettingsMenu;
+        }
+
+        public virtual void switchToRules(object INFO)
+        {
+            _level.GUI = RulesMenu;
+        }
+
+        public virtual void backToMainMenu(object INFO)
+        {
+            _level.GUI = MainMenu;
+        }
+
+        public virtual void exitGame(object INFO)
+        {
+            Game.Exit();
         }
 
         private void CreateLevelUI()

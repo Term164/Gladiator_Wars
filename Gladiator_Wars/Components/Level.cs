@@ -161,6 +161,7 @@ namespace Gladiator_Wars
 
 
         private void attackUnit(Move unitMove) {
+            SoundManager.PlayMelleAttackSound();
             unitMove.unit.attackPoint = false;
             unitMove.unit.attack(unitMove.endPos.unit);
             GUIRenderer.damageText.resetDamage((unitMove.endPos.unit.position + new Vector2(16,0))*Renderer.SCALE, unitMove.unit.getDamageValue().ToString());
@@ -254,6 +255,16 @@ namespace Gladiator_Wars
         public void switchScene(Scene scene)
         {
             _currentScene = scene;
+        }
+
+        public void SaveLevel()
+        {
+
+        }
+
+        public void LoadLevel()
+        {
+
         }
     }
 }

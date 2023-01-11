@@ -129,6 +129,7 @@ namespace Gladiator_Wars
 
         public virtual void RunButtonClick()
         {
+            SoundManager.PlayButtonClickSound();
             if(ButtonClicked != null)
             {
                 ButtonClicked(info);

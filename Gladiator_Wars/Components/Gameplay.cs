@@ -13,6 +13,7 @@ namespace Gladiator_Wars
         private Level _currentLevel;
         private Renderer _renderer;
         private GUIRenderer _guiRenderer;
+        private SoundManager soundManager;
 
         public Gameplay(Game game) : base(game)
         {
@@ -22,6 +23,8 @@ namespace Gladiator_Wars
             _physicsEngine = new PhysicsEngine(game, _currentLevel);
             _renderer = new Renderer(game, _currentLevel);
             _guiRenderer = new GUIRenderer(game, _currentLevel);
+            soundManager = new SoundManager(game);
+
 
             player.UpdateOrder = 0;
             player2.UpdateOrder = 1;

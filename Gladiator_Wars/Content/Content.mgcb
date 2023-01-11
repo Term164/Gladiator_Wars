@@ -13,6 +13,12 @@
 
 #---------------------------------- Content ---------------------------------#
 
+#begin Assets/background_music.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Assets/background_music.mp3
+
 #begin Assets/background.gif
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -37,12 +43,24 @@
 /processorParam:TextureFormat=Color
 /build:Assets/backgroundAnimation.png
 
+#begin Assets/button_click.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Assets/button_click.mp3
+
 #begin Assets/Main.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor
 /processorParam:PremultiplyAlpha=True
 /processorParam:TextureFormat=Compressed
 /build:Assets/Main.spritefont
+
+#begin Assets/Melee_Attack.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Assets/Melee_Attack.mp3
 
 #begin Assets/Menu.spritefont
 /importer:FontDescriptionImporter
