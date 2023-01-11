@@ -1,11 +1,16 @@
 ﻿using Gladiator_Wars.Components;
+using Gladiator_Wars.Infastructure;
 using Microsoft.Xna.Framework;
+using System.Diagnostics;
+using System.IO;
+using System.Text.Json;
 
 namespace Gladiator_Wars
 {
 
     internal class Gameplay : GameComponent
     {
+        public static string settingsFilePath = "settings.ini";
         // Game Components
         private HumanPlayer player;
         private AIPlayer player2;
@@ -23,8 +28,13 @@ namespace Gladiator_Wars
             _physicsEngine = new PhysicsEngine(game, _currentLevel);
             _renderer = new Renderer(game, _currentLevel);
             _guiRenderer = new GUIRenderer(game, _currentLevel);
-            soundManager = new SoundManager(game);
 
+            if (File.Exists(settingsFilePath))
+            {
+                Settings.gameSettings = LoadSettings();
+            }
+
+            soundManager = new SoundManager(game);
 
             player.UpdateOrder = 0;
             player2.UpdateOrder = 1;
@@ -47,6 +57,12 @@ namespace Gladiator_Wars
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
+        }
+
+        private Settings LoadSettings()
+        {
+            var FileContents = File.ReadAllText(settingsFilePath);
+            return JsonSerializer.Deserialize<Settings>(FileContents);
         }
     }
 }

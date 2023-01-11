@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Gladiator_Wars.Infastructure;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Media;
 
@@ -25,16 +26,22 @@ namespace Gladiator_Wars
 
         public static void PlayButtonClickSound()
         {
-            buttonClick.Play();
+            if (Settings.gameSettings.SoundOn) buttonClick.Play();
         }
         public static void PlayMelleAttackSound()
         {
-            meeleAttackSound.Play();
+            if (Settings.gameSettings.SoundOn) meeleAttackSound.Play();
         }
 
         public static void PlayBackgroundMusic()
         {
+            MediaPlayer.IsMuted = !Settings.gameSettings.SoundOn;
             MediaPlayer.Play(backgroundMusic);
+        }
+
+        public static void soundToggled()
+        {
+            MediaPlayer.IsMuted = !MediaPlayer.IsMuted;
         }
     }
 }

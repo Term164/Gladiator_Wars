@@ -1,7 +1,11 @@
 ﻿using Gladiator_Wars.Components;
+using Gladiator_Wars.Infastructure;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections;
+using System.Diagnostics;
+using System.IO;
+using System.Text.Json;
 
 namespace Gladiator_Wars
 
@@ -149,7 +153,8 @@ namespace Gladiator_Wars
             string descriptionString = "VOLUME:";
             SettingsMenu.Add(new Text(new Vector2(screenWidth / 4, 200), descriptionString, statFont, Color.White));
 
-            Button toggleVolume = new Button(new Vector2(screenWidth / 4 + 100, 200 - 8), new Vector2(32, 32), defaultActionButton, healActionButtonSprite, 1, null, null, true);
+            Button toggleVolume = new Button(new Vector2(screenWidth / 4 + 100, 200 - 8), new Vector2(32, 32), defaultActionButton, healActionButtonSprite, 1, toggleSound, null, true);
+            toggleVolume.isToggled = Settings.gameSettings.SoundOn;
             toggleVolume.defaultColor = Color.Red;
             SettingsMenu.Add(toggleVolume);
 
@@ -196,6 +201,18 @@ namespace Gladiator_Wars
 
         }
 
+        public virtual void saveSettings()
+        {
+            string serializedText = JsonSerializer.Serialize<Settings>(Settings.gameSettings);
+            Trace.WriteLine(serializedText);
+            File.WriteAllText(Gameplay.settingsFilePath, serializedText);
+        }
+
+        public virtual void toggleSound(object INFO)
+        {
+            Settings.gameSettings.toggleSound();
+        }
+
         public virtual void startNewGame(object INFO)
         {
             _level.GUI = LevelUI;
@@ -214,6 +231,7 @@ namespace Gladiator_Wars
         public virtual void backToMainMenu(object INFO)
         {
             _level.GUI = MainMenu;
+            saveSettings();
         }
 
         public virtual void exitGame(object INFO)
