@@ -6,7 +6,7 @@ namespace Gladiator_Wars
     {
         Random random;
         public WeaponFactory(int seed) {
-            random = new Random();
+            random = new Random(seed);
         }
 
         public Weapon GenerateWeapon(Quality quality, bool ranged)

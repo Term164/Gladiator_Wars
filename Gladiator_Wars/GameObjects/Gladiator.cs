@@ -41,7 +41,7 @@ namespace Gladiator_Wars
         // Stats that can be changed with experiencePoints
         public int strength = 1; // Increases maxWeight capacity + melee damage
         public int toughness = 1; // Increases HP
-        public int Athletics = 1; // Increases movement distance + dodge chance
+        public int athletics = 1; // Increases movement distance + dodge chance
         public int dexterity = 1; // Increases melee weapon damage
         public int perception = 1; // Increases chance to dodge/block + damage with throwing weapons
 
