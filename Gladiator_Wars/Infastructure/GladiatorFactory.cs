@@ -74,6 +74,12 @@ namespace Gladiator_Wars
             gladiator.dexterity = random.Next(min,range);
             gladiator.perception = random.Next(min,range);
 
+            // ======================== CALCULATING FINAL VALUES =========================
+
+            gladiator.calculateHealthPoints();
+            gladiator.calculateTotalWeight();
+            gladiator.calcualteTotalArmourPoints();
+
             return gladiator;
         }
 

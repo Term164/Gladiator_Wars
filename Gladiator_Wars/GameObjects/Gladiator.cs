@@ -1,10 +1,6 @@
 ﻿using Gladiator_Wars.Components;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using System;
-using System.Collections.Generic;
 
 namespace Gladiator_Wars
 {
@@ -63,7 +59,6 @@ namespace Gladiator_Wars
             this.player = player;
             player.units.Add(this);
             weapon = new Hands();
-            calculateHealthPoints();
         }
 
         public void attack(Gladiator gladiator)
@@ -93,9 +88,21 @@ namespace Gladiator_Wars
             healthPoints = (int)(BASE_HEALTH * 1.0+toughness/100);
         }
 
+        public void calculateTotalWeight()
+        {
+            totalWeight = weapon.weight + armour.weight;
+            if(shield != null) totalWeight += shield.weight;
+        }
+        
+        public void calcualteTotalArmourPoints()
+        {
+            ArmourPoints = armour.armourPoints;
+            if(shield != null) ArmourPoints += shield.armourPoints;
+        }
+
         public int getInitiative()
         {
-            return BASE_INITIATIVE - totalWeight + Athletics;
+            return BASE_INITIATIVE - totalWeight + athletics;
         }
 
         // ========================== HELPER METHODS ==============================
