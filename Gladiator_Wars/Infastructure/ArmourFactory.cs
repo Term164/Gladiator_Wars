@@ -20,8 +20,8 @@ namespace Gladiator_Wars.Infastructure
             switch(armourType)
             {
                 case 0: return new LightArmour(quality);
-                case 2: return new MediumArmour(quality);
-                case 3: return new HeavyArmour(quality);
+                case 1: return new MediumArmour(quality);
+                case 2: return new HeavyArmour(quality);
                 default: throw new Exception("Wrong type when generating new armour.");
             }
         }

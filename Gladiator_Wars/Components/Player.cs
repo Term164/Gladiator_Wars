@@ -20,14 +20,14 @@ namespace Gladiator_Wars.Components
         public Player(Game game, Level level) : base(game)
         {
             units = new List<Gladiator>();
-            this.currentlevel= level;
+            currentlevel= level;
 
             // Register player to level
             if (level.player1 == null) level.player1 = this;
             else {
                 // Initialize AI units
                 level.player2 = this;
-                level.loadPlayerUnits(this);
+                level.loadPlayerUnits();
             }
             
 
@@ -53,17 +53,6 @@ namespace Gladiator_Wars.Components
             resetActiveTile();
         }
 
-        public Gladiator CreateNewGladiator(int boardX, int boardY)
-        {
-            Gladiator unit = new Gladiator(currentlevel.Board[boardX,boardY], this);
-            unit.armour = new LightArmour(Quality.common);
-            unit.weapon = new Sword(Quality.common);
-            unit.shield = new BigShield(Quality.common);
-            currentlevel.Board[boardX, boardY].unit = unit;
-            currentlevel._currentScene.addItem(unit);
-            return unit;
-        }
-
         public void RemoveGladiator(Gladiator gladiator)
         {
             units.Remove(gladiator);
@@ -76,7 +65,8 @@ namespace Gladiator_Wars.Components
             {
                 if(units.Count < 1)
                 {
-                    CreateNewGladiator(Level.BOARD_WIDTH-2, Level.BOARD_HEIGHT-2);
+
+                    //CreateNewGladiator(Level.BOARD_WIDTH-2, Level.BOARD_HEIGHT-2);
                 }
             }
             base.Update(gameTime);

@@ -34,8 +34,11 @@ namespace Gladiator_Wars
 
         public GameState levelGameState = GameState.MainMenu;
 
+        public GladiatorFactory gladiatorFactory;
+
         public Level(Game game) : base(game)
         {
+            gladiatorFactory = new GladiatorFactory(164);
             _currentScene = new Scene();
             gameMoves = new List<Move>();
             nextMoveStack = new Stack<Move>();
@@ -80,9 +83,14 @@ namespace Gladiator_Wars
             }
         }
 
-        public void loadPlayerUnits(Player player)
+        public void loadPlayerUnits()
         {
-            player.CreateNewGladiator(2, 1);
+            Board[2,1].unit = gladiatorFactory.generateNewGladiator(Board[2,1],player2,Difficulty.easy,false);
+            _currentScene.addItem(Board[2, 1].unit);
+            Board[1,1].unit = gladiatorFactory.generateNewGladiator(Board[1,1],player1,Difficulty.easy,false);
+            _currentScene.addItem(Board[1,1].unit);
+            Board[2,2].unit = gladiatorFactory.generateNewGladiator(Board[2,2],player1,Difficulty.easy,true);
+            _currentScene.addItem(Board[2,2].unit);
             createGladiatorQueue();
         }
 
