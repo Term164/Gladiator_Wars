@@ -27,7 +27,7 @@ namespace Gladiator_Wars.Components
             else {
                 // Initialize AI units
                 level.player2 = this;
-                level.loadPlayerUnits();
+                level.loadLevel(0);
             }
             
 

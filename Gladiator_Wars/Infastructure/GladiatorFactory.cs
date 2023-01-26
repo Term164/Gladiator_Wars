@@ -21,13 +21,15 @@ namespace Gladiator_Wars
         WeaponFactory weaponFactory;
         ArmourFactory armourFactory;
         ShieldFactory shieldFactory;
+        private Level level;   
 
-        public GladiatorFactory(int seed)
+        public GladiatorFactory(int seed, Level level)
         {
             random = new Random(seed);
-            weaponFactory = new WeaponFactory(seed*2147483647);
-            armourFactory = new ArmourFactory(seed*6700417);
+            weaponFactory = new WeaponFactory(seed * 2147483647);
+            armourFactory = new ArmourFactory(seed * 6700417);
             shieldFactory = new ShieldFactory(seed * 74142433);
+            this.level = level;
         }
 
         public Gladiator generateNewGladiator(Tile boardPosition, Player player, Difficulty difficulty, bool ranged)
@@ -79,12 +81,31 @@ namespace Gladiator_Wars
             gladiator.calculateHealthPoints();
             gladiator.calculateTotalWeight();
             gladiator.calcualteTotalArmourPoints();
+            gladiator.CalculateMoveDistance();
 
             return gladiator;
         }
 
-        public List<Gladiator> generateGladiatorList(List<Difficulty> difficultyList) {
-            return null;
+        public List<Gladiator> generateGladiatorList(List<Difficulty> difficultyList,Player player, int numOfArchers, bool boss) {
+            List<Gladiator> gladiators = new List<Gladiator>();
+            for (int i = 0; i < difficultyList.Count; i++)
+            {
+                int x, y;
+                if(player is AIPlayer)
+                {
+                    x = random.Next(9, 15);
+                    y = random.Next(1, 8);
+                }
+                else
+                {
+                    x = random.Next(1, 9);
+                    y = random.Next(1, 8);
+                }
+
+                gladiators.Add(generateNewGladiator(level.Board[x,y], player, difficultyList[i], numOfArchers > 0));
+                if(numOfArchers > 0) numOfArchers--;
+           }
+            return gladiators;
         }
 
 

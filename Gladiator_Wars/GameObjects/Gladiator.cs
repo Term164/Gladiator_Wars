@@ -100,6 +100,12 @@ namespace Gladiator_Wars
             if(shield != null) ArmourPoints += shield.armourPoints;
         }
 
+        public void CalculateMoveDistance()
+        {
+            moveDistance += athletics / 10 - totalWeight / 50;
+            if(moveDistance < 1) moveDistance = 1;
+        }
+
         public int getInitiative()
         {
             return BASE_INITIATIVE - totalWeight + athletics;
