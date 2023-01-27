@@ -20,7 +20,7 @@ namespace Gladiator_Wars.Components
 
         public override void Update(GameTime gameTime)
         {
-            if(hasTurn) {
+            if(hasTurn && currentlevel.player1.units.Count > 0) {
                 EvaluteBoard();
                 Move move = getBestMove();
                 makeMove(move);

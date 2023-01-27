@@ -68,6 +68,7 @@ namespace Gladiator_Wars
                 _currentLevel.levelGameState = GameState.LevelLost; // TODO: Make you lost screen with 2 buttons restart and main menu
                 _currentLevel.levelNumber = 0;
                 _currentLevel.reset();
+                _currentLevel.GUI = _guiRenderer.LoseScreen;
             }
             base.Update(gameTime);
             

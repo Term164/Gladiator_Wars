@@ -23,14 +23,19 @@ namespace Gladiator_Wars
             this.player = player;
 
             Gladiator unit = player.selectedUnit;
-            Background = new Background(position, 4);
-            HealthPoints = new Text(position + new Vector2(10,2) * Renderer.SCALE,"HP: " + unit.healthPoints,font,Color.White);
-            ExperiencePoints = new Text(position + new Vector2(10, 12) * Renderer.SCALE, "XP: " + unit.experiencePoints, font, Color.White);
-            WeaponDamage = new Text(position + new Vector2(10, 22) * Renderer.SCALE, "DMG: " + unit.getDamageValue(), font, Color.White);
+            if(unit != null )
+            {
 
-            ActionPoints = new Text(position + new Vector2(42, 2) * Renderer.SCALE, "Action points: " + unit.getActionPoints(), font, Color.White);
-            MoveDistance = new Text(position + new Vector2(42, 12) * Renderer.SCALE, "Move distance: " + unit.moveDistance, font, Color.White);
-            ArmourPoints = new Text(position + new Vector2(42, 22) * Renderer.SCALE, "Armour points: " + unit.ArmourPoints, font, Color.White);
+                Background = new Background(position, 4);
+                HealthPoints = new Text(position + new Vector2(10,2) * Renderer.SCALE,"HP: " + unit.healthPoints,font,Color.White);
+                ExperiencePoints = new Text(position + new Vector2(10, 12) * Renderer.SCALE, "XP: " + unit.experiencePoints, font, Color.White);
+                WeaponDamage = new Text(position + new Vector2(10, 22) * Renderer.SCALE, "DMG: " + unit.getDamageValue(), font, Color.White);
+
+                ActionPoints = new Text(position + new Vector2(42, 2) * Renderer.SCALE, "Action points: " + unit.getActionPoints(), font, Color.White);
+                MoveDistance = new Text(position + new Vector2(42, 12) * Renderer.SCALE, "Move distance: " + unit.moveDistance, font, Color.White);
+                ArmourPoints = new Text(position + new Vector2(42, 22) * Renderer.SCALE, "Armour points: " + unit.ArmourPoints, font, Color.White);
+
+            }
         }
 
         public void updateUnit()
@@ -51,13 +56,16 @@ namespace Gladiator_Wars
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            Background.Draw(spriteBatch);
-            HealthPoints.Draw(spriteBatch);
-            ExperiencePoints.Draw(spriteBatch);
-            WeaponDamage.Draw(spriteBatch);
-            ActionPoints.Draw(spriteBatch);
-            MoveDistance.Draw(spriteBatch);
-            ArmourPoints.Draw(spriteBatch);
-        }
+            if(player.selectedUnit != null)
+            {
+                Background.Draw(spriteBatch);
+                HealthPoints.Draw(spriteBatch);
+                ExperiencePoints.Draw(spriteBatch);
+                WeaponDamage.Draw(spriteBatch);
+                ActionPoints.Draw(spriteBatch);
+                MoveDistance.Draw(spriteBatch);
+                ArmourPoints.Draw(spriteBatch);
+            }
+       }
     }
 }

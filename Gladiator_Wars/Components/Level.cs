@@ -55,8 +55,7 @@ namespace Gladiator_Wars
 
             // ======================== DEFINE LEVELS =======================
             levels = new List<List<Difficulty>>(new List<Difficulty>[5]);
-            //levels[0] = new List<Difficulty> {Difficulty.easy, Difficulty.easy, Difficulty.medium };
-            levels[0] = new List<Difficulty> {Difficulty.easy};
+            levels[0] = new List<Difficulty> {Difficulty.easy, Difficulty.easy, Difficulty.medium };
             levels[1] = new List<Difficulty> {Difficulty.easy, Difficulty.easy, Difficulty.medium, Difficulty.medium };
             levels[2] = new List<Difficulty> {Difficulty.easy, Difficulty.easy, Difficulty.medium, Difficulty.medium, Difficulty.hard };
             levels[3] = new List<Difficulty> {Difficulty.medium, Difficulty.hard, Difficulty.hard,Difficulty.medium, Difficulty.medium };

@@ -46,6 +46,7 @@ namespace Gladiator_Wars
         public ArrayList LevelUI;
         public ArrayList RulesMenu;
         public ArrayList SettingsMenu;
+        public ArrayList LoseScreen;
 
         public GUIRenderer(Game game, Level level) : base(game)
         {
@@ -55,6 +56,7 @@ namespace Gladiator_Wars
             LevelUI = new ArrayList();
             RulesMenu = new ArrayList();
             SettingsMenu = new ArrayList();
+            LoseScreen = new ArrayList();
         }
 
         protected override void LoadContent()
@@ -92,11 +94,36 @@ namespace Gladiator_Wars
             CreateMainMenu();
             CreateRulesMenu();
             CreateSettingsMenu();
+            CreateLoseScreen();
 
             _level.GUI = MainMenu;
 
             base.LoadContent();
             SoundManager.PlayBackgroundMusic();
+        }
+
+        private void CreateLoseScreen()
+        {
+            int screenWidth = GraphicsDevice.Viewport.Width;
+            int screenHeight = GraphicsDevice.Viewport.Height;
+
+            GraphicsObject background = new GraphicsObject(new Vector2(0, 0), new Vector2(1200, 720), menuBackgroundSprite);
+            background.size = 1.6f;
+            background.color = Color.Gray;
+            LoseScreen.Add(background);
+            
+            string title = "YOU LOST!";
+            Vector2 titleSize = MenuFont.MeasureString(title);
+            LoseScreen.Add(new Text(new Vector2(screenWidth / 2 - titleSize.X / 2, screenHeight / 2 - titleSize.Y / 2), title, MenuFont, Color.Red));
+
+
+            Button RestartButton = new Button(new Vector2(screenWidth / 2 - 32 * 10, screenHeight/2 + 5*32), new Vector2(32, 11), regularButtonSprite, font, "Restart", startNewGame, null, false);
+            RestartButton.size = 8;
+            LoseScreen.Add(RestartButton);
+
+            Button MainMenuButton = new Button(new Vector2(screenWidth / 2 + 32 * 2, screenHeight/2 + 5*32), new Vector2(32, 11), regularButtonSprite, font, "Main Menu", backToMainMenu, null, false);
+            MainMenuButton.size = 8;
+            LoseScreen.Add(MainMenuButton);
         }
 
         private void CreateRulesMenu()
@@ -128,12 +155,12 @@ namespace Gladiator_Wars
                                  "Gladiator turn order is determined by the initative and weight of each gladiator.\n" +
                                  "Each player must finish the turn of the current gladiator before using another.";
             RulesMenu.Add(new Text(new Vector2(screenWidth / 4, 320), rulesString, statFont, Color.White));
-
+ 
             Button backButton = new Button(new Vector2(screenWidth / 2 - 32 * 4, 768), new Vector2(32, 11), regularButtonSprite, font, "Back", backToMainMenu, null, false);
             backButton.size = 8;
             RulesMenu.Add(backButton);
 
-        }
+       }
 
         private void CreateSettingsMenu()
         {
