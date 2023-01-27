@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Security.Cryptography;
 
 namespace Gladiator_Wars
@@ -13,14 +14,15 @@ namespace Gladiator_Wars
         MainMenu,
         HowToPlay,
         Leveling,
-        Level
+        Level,
+        LevelLost
     }
 
     internal class Level : GameComponent
     {
 
         public static readonly int BOARD_HEIGHT = 9, BOARD_WIDTH = 16;
-        private int _currentLevel = 0;
+        public int levelNumber = 0;
         private List<List<Difficulty>> levels;
         private List<Difficulty> playerUnits = new List<Difficulty> {Difficulty.easy, Difficulty.easy, Difficulty.medium };
             
@@ -39,11 +41,12 @@ namespace Gladiator_Wars
         public GameState levelGameState = GameState.MainMenu;
 
         public GladiatorFactory gladiatorFactory;
+        public int seed = 164;
 
         public Level(Game game) : base(game)
         {
 
-            gladiatorFactory = new GladiatorFactory(164, this);
+            gladiatorFactory = new GladiatorFactory(seed, this);
             _currentScene = new Scene();
             gameMoves = new List<Move>();
             nextMoveStack = new Stack<Move>();
@@ -52,12 +55,12 @@ namespace Gladiator_Wars
 
             // ======================== DEFINE LEVELS =======================
             levels = new List<List<Difficulty>>(new List<Difficulty>[5]);
-            levels[0] = new List<Difficulty> {Difficulty.easy, Difficulty.easy, Difficulty.medium };
+            //levels[0] = new List<Difficulty> {Difficulty.easy, Difficulty.easy, Difficulty.medium };
+            levels[0] = new List<Difficulty> {Difficulty.easy};
             levels[1] = new List<Difficulty> {Difficulty.easy, Difficulty.easy, Difficulty.medium, Difficulty.medium };
             levels[2] = new List<Difficulty> {Difficulty.easy, Difficulty.easy, Difficulty.medium, Difficulty.medium, Difficulty.hard };
             levels[3] = new List<Difficulty> {Difficulty.medium, Difficulty.hard, Difficulty.hard,Difficulty.medium, Difficulty.medium };
             levels[4] = new List<Difficulty> {Difficulty.hard, Difficulty.hard, Difficulty.hard, Difficulty.hard };
-            initLevel();
         }
 
         private void loadLevelUnits(List<Gladiator> gladiators)
@@ -103,22 +106,48 @@ namespace Gladiator_Wars
                     _currentScene.addItem(Board[x, y]);
                 }
             }
+
+            loadLevel(0);
         }
 
         public void loadLevel(int levelNumber)
         {
-            loadLevelUnits(gladiatorFactory.generateGladiatorList(levels[0],player2,0,false));
-
             if (levelNumber == 0) // If this is the first level create new units
             {
                 loadLevelUnits(gladiatorFactory.generateGladiatorList(playerUnits, player1, 1, false)); // Load Human player units
+                loadLevelUnits(gladiatorFactory.generateGladiatorList(levels[0],player2,0,false));
             }
             else // Copy surviving units from the previous battle
             {
-
+                loadLevelUnits(gladiatorFactory.generateGladiatorList(levels[levelNumber], player2, 1, false)); // Load new AI units
+                resetPlayerUnits();
             }
 
             createGladiatorQueue();
+        }
+
+        private void resetPlayerUnits()
+        {
+            Random random = new Random(seed);
+            foreach(Gladiator gladiator in player1.units)
+            {
+                gladiator.calculateHealthPoints(); //Reset health
+                // ==================== RESET POSITIONS ===================
+                int x;
+                int y;
+                do
+                {
+                    x = random.Next(1, 9);
+                    y = random.Next(1, 8);
+                }
+                while (Board[x, y].unit != null);
+
+
+                gladiator.boardPosition.unit = null;
+                gladiator.boardPosition = Board[x,y];
+                gladiator.position = gladiator.boardPosition.position;
+                Board[x, y].unit = gladiator;
+            }
         }
 
 
@@ -198,9 +227,9 @@ namespace Gladiator_Wars
 
         private void attackUnit(Move unitMove) {
             SoundManager.PlayMelleAttackSound();
+            GUIRenderer.damageText.resetDamage((unitMove.endPos.unit.position + new Vector2(16,0))*Renderer.SCALE, unitMove.unit.getDamageValue().ToString());
             unitMove.unit.attackPoint = false;
             unitMove.unit.attack(unitMove.endPos.unit);
-            GUIRenderer.damageText.resetDamage((unitMove.endPos.unit.position + new Vector2(16,0))*Renderer.SCALE, unitMove.unit.getDamageValue().ToString());
         }
 
         private void moveUnit(Move unitMove) {
@@ -291,16 +320,6 @@ namespace Gladiator_Wars
         public void switchScene(Scene scene)
         {
             _currentScene = scene;
-        }
-
-        public void SaveLevel()
-        {
-
-        }
-
-        public void LoadLevel()
-        {
-
         }
     }
 }

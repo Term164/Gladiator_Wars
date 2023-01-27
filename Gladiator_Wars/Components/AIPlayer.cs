@@ -57,7 +57,7 @@ namespace Gladiator_Wars.Components
             {
                 for (int y = -gladiator.weapon.range; y < gladiator.weapon.range; y++)
                 {
-                    if(x != 0 && y != 0 && x > 0 && x < Level.BOARD_WIDTH && y > 0 && y < Level.BOARD_HEIGHT) { // TODO: Check if the current tile is inside board area
+                    if(x != 0 && y != 0 && unitX + x > 0 && unitX + x < Level.BOARD_WIDTH && unitY + y > 0 && unitY + y < Level.BOARD_HEIGHT) {
                         boardEvaliuationMap[unitX+x,unitY+y] = gladiator.weapon.damage * team;
                     }
                 }

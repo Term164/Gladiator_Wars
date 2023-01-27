@@ -23,14 +23,8 @@ namespace Gladiator_Wars.Components
             currentlevel= level;
 
             // Register player to level
-            if (level.player1 == null) level.player1 = this;
-            else {
-                // Initialize AI units
-                level.player2 = this;
-                level.loadLevel(0);
-            }
-            
-
+            if (level.player1 == null) level.player1 = this; // HUMAN PLAYER
+            else level.player2 = this; // AI PLAYER
         }
 
         public virtual void setActiveTile(Tile selectedTile)

@@ -90,7 +90,6 @@ namespace Gladiator_Wars
             //_level.GUI.Add(new Text(new Vector2(400,400),"test", font, Color.Green));
 
             CreateMainMenu();
-            CreateLevelUI();
             CreateRulesMenu();
             CreateSettingsMenu();
 
@@ -215,7 +214,10 @@ namespace Gladiator_Wars
 
         public virtual void startNewGame(object INFO)
         {
+            _level.initLevel(); // Load level
+            CreateLevelUI();
             _level.GUI = LevelUI;
+            _level.levelGameState = GameState.Level;
         }
 
         public virtual void openSettingsMenu(object INFO)

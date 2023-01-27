@@ -56,9 +56,22 @@ namespace Gladiator_Wars
 
         public override void Update(GameTime gameTime)
         {
+            
+            if (player2.units.Count == 0 && _currentLevel.levelGameState == GameState.Level) // USER WINS
+            {
+                _currentLevel.levelGameState = GameState.Leveling;
+                _currentLevel.levelNumber++;
+                _currentLevel.loadLevel(_currentLevel.levelNumber);
+            }
+            else if (player.units.Count == 0 && _currentLevel.levelGameState == GameState.Level )// AI WINS
+            {
+                _currentLevel.levelGameState = GameState.LevelLost; // TODO: Make you lost screen with 2 buttons restart and main menu
+                _currentLevel.levelNumber = 0;
+                _currentLevel.reset();
+            }
             base.Update(gameTime);
+            
         }
-
         private Settings LoadSettings()
         {
             var FileContents = File.ReadAllText(settingsFilePath);
