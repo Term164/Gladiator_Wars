@@ -1,11 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Gladiator_Wars.Infastructure
+﻿namespace Gladiator_Wars.Infastructure
 {
     internal class Move
     {

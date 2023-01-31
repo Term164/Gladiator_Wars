@@ -23,19 +23,14 @@ namespace Gladiator_Wars
             this.player = player;
 
             Gladiator unit = player.selectedUnit;
-            if(unit != null )
-            {
+            Background = new Background(position, 4);
+            HealthPoints = new Text(position + new Vector2(10,2) * Renderer.SCALE,"HP: ",font,Color.White);
+            ExperiencePoints = new Text(position + new Vector2(10, 12) * Renderer.SCALE, "XP: ", font, Color.White);
+            WeaponDamage = new Text(position + new Vector2(10, 22) * Renderer.SCALE, "DMG: ", font, Color.White);
 
-                Background = new Background(position, 4);
-                HealthPoints = new Text(position + new Vector2(10,2) * Renderer.SCALE,"HP: " + unit.healthPoints,font,Color.White);
-                ExperiencePoints = new Text(position + new Vector2(10, 12) * Renderer.SCALE, "XP: " + unit.experiencePoints, font, Color.White);
-                WeaponDamage = new Text(position + new Vector2(10, 22) * Renderer.SCALE, "DMG: " + unit.getDamageValue(), font, Color.White);
-
-                ActionPoints = new Text(position + new Vector2(42, 2) * Renderer.SCALE, "Action points: " + unit.getActionPoints(), font, Color.White);
-                MoveDistance = new Text(position + new Vector2(42, 12) * Renderer.SCALE, "Move distance: " + unit.moveDistance, font, Color.White);
-                ArmourPoints = new Text(position + new Vector2(42, 22) * Renderer.SCALE, "Armour points: " + unit.ArmourPoints, font, Color.White);
-
-            }
+            ActionPoints = new Text(position + new Vector2(42, 2) * Renderer.SCALE, "Action points: ", font, Color.White);
+            MoveDistance = new Text(position + new Vector2(42, 12) * Renderer.SCALE, "Move distance: ", font, Color.White);
+            ArmourPoints = new Text(position + new Vector2(42, 22) * Renderer.SCALE, "Armour points: ", font, Color.White);
         }
 
         public void updateUnit()
@@ -48,7 +43,7 @@ namespace Gladiator_Wars
                 WeaponDamage.setText("DMG: " + unit.getDamageValue());
                 ActionPoints.setText("Action points: " + unit.getActionPoints());
                 MoveDistance.setText("Move distance: " + unit.moveDistance);
-                ArmourPoints.setText("Armour points: " + unit.ArmourPoints);
+                ArmourPoints.setText("Armour points: " + (int)((unit.ArmourPoints + (unit.shield != null ? unit.shield.armourPoints : 0)) * (unit.isDefending ? 1.2f : 1f)));
                 
             }
 

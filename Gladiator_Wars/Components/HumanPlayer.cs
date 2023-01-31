@@ -47,7 +47,7 @@ namespace Gladiator_Wars.Components
                     GUIRenderer.unitStatBoard.updateUnit();
                 }
             }
-            else
+            else if(possibleMoves != null)
             {
                 foreach (Move move in possibleMoves)
                 {
@@ -90,25 +90,39 @@ namespace Gladiator_Wars.Components
 
         public virtual void getUnitAttackOptions(object INFO)
         {
-
-            if (CURRENT_STATE == PLAYER_STATE.ATTACK || !active.unit.attackPoint)
-                resetState();
-            else
+            if(active != null)
             {
-                CURRENT_STATE = PLAYER_STATE.ATTACK;
-                possibleMoves = currentlevel.getAllUnitAttackMoves(active);
+                if (CURRENT_STATE == PLAYER_STATE.ATTACK || !active.unit.attackPoint)
+                    resetState();
+                else
+                {
+                    CURRENT_STATE = PLAYER_STATE.ATTACK;
+                    possibleMoves = currentlevel.getAllUnitAttackMoves(active);
+                }
+                updateTilesColor();
             }
+        }
+
+        public virtual void unitBlock(object INFO)
+        {
+            Move move = new Move(selectedUnit, Action.Block, selectedUnit.boardPosition);
+            makeMove(move);
+            resetState();
             updateTilesColor();
         }
 
-        public void unitBlock()
+        public virtual void getUnitHealOptions(object INFO)
         {
-
-        }
-
-        public void getUnitHealOptions()
-        {
-
+            if(CURRENT_STATE == PLAYER_STATE.HEAL || active.unit.hasHeald)
+            {
+                resetState();
+            }
+            else
+            {
+                CURRENT_STATE = PLAYER_STATE.HEAL;
+                possibleMoves = currentlevel.GetAllUnitHealMoves(active);
+            }
+            updateTilesColor();
         }
 
         private void resetState()

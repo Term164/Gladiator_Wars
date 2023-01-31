@@ -2,9 +2,6 @@
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Gladiator_Wars.Components
 {
@@ -20,7 +17,7 @@ namespace Gladiator_Wars.Components
 
         public override void Update(GameTime gameTime)
         {
-            if(hasTurn && currentlevel.player1.units.Count > 0) {
+            if(hasTurn && currentlevel.player1.units.Count > 0 && active != null) {
                 EvaluteBoard();
                 Move move = getBestMove();
                 makeMove(move);
@@ -49,16 +46,20 @@ namespace Gladiator_Wars.Components
 
         private void EvaluateGladiatorPosition(Gladiator gladiator, bool ally)
         {
-            int team = ally ? -1 : 1;
-            int unitX = GameObject.convertPositionToBoardPosition(gladiator.position.X);
-            int unitY = GameObject.convertPositionToBoardPosition(gladiator.position.Y);
+            if (gladiator == active.unit) return;
+            float team = ally ? -1 : 1;
+            if (active.unit.type == Type.Tank) team = -1;
+            else if (active.unit.type == Type.Bowman) team *= (team == 1 ? 2 : 1);
 
-            for (int x = -gladiator.weapon.range; x < gladiator.weapon.range; x++)
+            int unitX = GameObject.convertPositionToBoardPosition(gladiator.boardPosition.position.X);
+            int unitY = GameObject.convertPositionToBoardPosition(gladiator.boardPosition.position.Y);
+
+            for (int x = -gladiator.weapon.range; x <= gladiator.weapon.range; x++)
             {
-                for (int y = -gladiator.weapon.range; y < gladiator.weapon.range; y++)
+                for (int y = -gladiator.weapon.range; y <= gladiator.weapon.range; y++)
                 {
-                    if(x != 0 && y != 0 && unitX + x > 0 && unitX + x < Level.BOARD_WIDTH && unitY + y > 0 && unitY + y < Level.BOARD_HEIGHT) {
-                        boardEvaliuationMap[unitX+x,unitY+y] = gladiator.weapon.damage * team;
+                    if((x != 0 || y != 0) && unitX + x > 0 && unitX + x < Level.BOARD_WIDTH && unitY + y > 0 && unitY + y < Level.BOARD_HEIGHT) {
+                        boardEvaliuationMap[unitX + x, unitY + y] = (int)(gladiator.calculateGivenDamage() * team);
                     }
                 }
             }
@@ -80,31 +81,76 @@ namespace Gladiator_Wars.Components
         private int evaluteMove(Move move)
         {
 
-            if (move.unitAction == Action.Attack) return move.unit.weapon.damage * 2;
+            if (move.unitAction == Action.Attack) {
+                int possibleDamageInflicted = move.endPos.unit.calculateRecievedDamage(move.unit.calculateGivenDamage());
+                if (possibleDamageInflicted > move.endPos.unit.healthPoints) return -100;
+                else return possibleDamageInflicted * -5;
+            } 
+            else if (move.unitAction == Action.Block) return calculateBlockEffectivnes(move);
+            else if (move.unitAction == Action.Heal) return -10;
 
             Tile tile = move.endPos;
             int tileX = GameObject.convertPositionToBoardPosition(tile.position.X);
             int tileY = GameObject.convertPositionToBoardPosition(tile.position.Y);
 
             int sum = boardEvaliuationMap[tileX, tileY];
-            int distanceToClosestEnemy = getDistanceToClosestEnemy(tile);
+            int distanceToClosestEnemy = getDistanceToClosestEnemy(tile); //* (move.unit.type == Type.Bowman ? -1 : 1);
+            int currentDistanceToClosestEnemy = getDistanceToClosestEnemy(active);
+
             int possibleDamageGiven;
 
             int enemyUnitsInRange = 0;
 
-            foreach(Gladiator gladiator in currentlevel.player1.units)
+
+            for (int x = -move.unit.weapon.range; x <= move.unit.weapon.range; x++)
             {
-                if(((int)(tile.position - gladiator.position).Length()) < active.unit.weapon.range)
+                for (int y = -move.unit.weapon.range; y <= move.unit.weapon.range; y++)
                 {
-                    enemyUnitsInRange++;
+                    if((x != 0 || y != 0) && tileX + x > 0 && tileX + x < Level.BOARD_WIDTH && tileY + y > 0 && tileY + y < Level.BOARD_HEIGHT) {
+                        if (currentlevel.Board[tileX + x, tileY + y].unit != null)
+                        {
+                            if(currentlevel.Board[tileX + x, tileY + y].unit.player != active.unit.player)
+                            {
+                                enemyUnitsInRange++;
+                            }
+                        }
+                    }
                 }
             }
 
-            possibleDamageGiven = enemyUnitsInRange * active.unit.weapon.damage;
+            possibleDamageGiven = enemyUnitsInRange * (int)(-move.unit.calculateGivenDamage() * 0.15f);
 
-            sum += distanceToClosestEnemy + possibleDamageGiven;
+            sum += (distanceToClosestEnemy - currentDistanceToClosestEnemy) + possibleDamageGiven;
 
             return sum;
+        }
+
+        private int calculateBlockEffectivnes(Move move)
+        {
+            Tile tile = move.endPos;
+            int sumBlockedDamage = 0;
+            foreach(Gladiator gladiator in currentlevel.player1.units)
+            {
+                int tileX = GameObject.convertPositionToBoardPosition(tile.position.X);
+                int tileY = GameObject.convertPositionToBoardPosition(tile.position.Y);
+
+                for (int x = - gladiator.weapon.range; x <= gladiator.weapon.range; x++)
+                {
+                    for (int y = -gladiator.weapon.range; y <= gladiator.weapon.range; y++)
+                    {
+                        if((x != 0 || y != 0) && tileX + x > 0 && tileX + x < Level.BOARD_WIDTH && tileY + y > 0 && tileY + y < Level.BOARD_HEIGHT) {
+                            if (currentlevel.Board[tileX + x, tileY + y].unit != null)
+                            {
+                                if (currentlevel.Board[tileX + x, tileY + y].unit == move.unit);
+                                {
+                                    sumBlockedDamage += (int)(move.unit.ArmourPoints * 0.2f);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return -sumBlockedDamage; 
         }
 
         private int getDistanceToClosestEnemy(Tile tile)
@@ -121,7 +167,7 @@ namespace Gladiator_Wars.Components
             }
 
             if (distance == int.MaxValue) throw new Exception("No enemy selected");
-            return distance;
+            return distance/32;
         }
 
 

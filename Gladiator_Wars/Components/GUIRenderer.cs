@@ -277,8 +277,8 @@ namespace Gladiator_Wars
             LevelUI.Add(unitStatBoard);
             // BUTTONS
             attackButton = new Button(new Vector2(Tile.TILE_SIZE * 5 * Renderer.SCALE, Tile.TILE_SIZE * (Level.BOARD_HEIGHT - 1) * Renderer.SCALE + 5), new Vector2(32, 32), defaultActionButton, attackActionButtonSprite, 3, player.getUnitAttackOptions, null, true);
-            blockButton = new Button(new Vector2(Tile.TILE_SIZE * 6 * Renderer.SCALE, Tile.TILE_SIZE * (Level.BOARD_HEIGHT - 1) * Renderer.SCALE + 5), new Vector2(32, 32), defaultActionButton, blockActionButtonSprite, 3, null, null, false);
-            healButton = new Button(new Vector2(Tile.TILE_SIZE * 7 * Renderer.SCALE, Tile.TILE_SIZE * (Level.BOARD_HEIGHT - 1) * Renderer.SCALE + 5), new Vector2(32, 32), defaultActionButton, healActionButtonSprite, 3, null, null, true);
+            blockButton = new Button(new Vector2(Tile.TILE_SIZE * 6 * Renderer.SCALE, Tile.TILE_SIZE * (Level.BOARD_HEIGHT - 1) * Renderer.SCALE + 5), new Vector2(32, 32), defaultActionButton, blockActionButtonSprite, 3, player.unitBlock, null, false);
+            healButton = new Button(new Vector2(Tile.TILE_SIZE * 7 * Renderer.SCALE, Tile.TILE_SIZE * (Level.BOARD_HEIGHT - 1) * Renderer.SCALE + 5), new Vector2(32, 32), defaultActionButton, healActionButtonSprite, 3, player.getUnitHealOptions, null, true);
             moveButton = new Button(new Vector2(Tile.TILE_SIZE * 8 * Renderer.SCALE, Tile.TILE_SIZE * (Level.BOARD_HEIGHT - 1) * Renderer.SCALE + 5), new Vector2(32, 32), defaultActionButton, moveActionButtonSprite, 3, player.getUnitMoveOptions, null, true);
             LevelUI.Add(attackButton);
             LevelUI.Add(blockButton);
@@ -288,9 +288,12 @@ namespace Gladiator_Wars
 
         public static void resetButtons()
         {
-            attackButton.isToggled = false;
-            moveButton.isToggled = false;
-            healButton.isToggled = false;
+            if(attackButton != null)
+            {
+                attackButton.isToggled = false;
+                moveButton.isToggled = false;
+                healButton.isToggled = false;
+            }
         }
 
         public override void Update(GameTime gameTime)

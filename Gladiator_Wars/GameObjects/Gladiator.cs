@@ -8,7 +8,15 @@ namespace Gladiator_Wars
         Move,
         Attack,
         Block,
+        Heal
+    }
 
+    public enum Type
+    {
+        Tank,
+        Warrior,
+        Bowman,
+        Spearman
     }
 
     internal class Gladiator : GameObject, MovableObject, IComparable<Gladiator>
@@ -19,12 +27,16 @@ namespace Gladiator_Wars
         public bool movePoint = true; // Action point for moving
         public bool attackPoint = true; // Action point for attacking
         public bool alive = true;
+        public bool isDefending = false;
+        public bool hasHeald = false;
 
         public Tile? nextNode;
         private float _velocity = 100;
         public Player player;
 
+        public bool isBoss = false;
         public string name;
+        public Type type;
 
         // Gladiators stats
         public int healthPoints;
@@ -63,11 +75,16 @@ namespace Gladiator_Wars
 
         public void attack(Gladiator gladiator)
         {
-            gladiator.recieveDamage(weapon.damage);
+            gladiator.recieveDamage(calculateGivenDamage());
+        }
+
+        public int calculateGivenDamage()
+        {
+            return (int)(weapon.damage * (1.0f + (dexterity + strength) / 100.0f));
         }
 
         public void recieveDamage(int damage){
-            healthPoints -= damage - ArmourPoints;
+            healthPoints -= calculateRecievedDamage(damage);
             // TODO: dodge chance
             if (healthPoints < 0)
             {
@@ -76,11 +93,33 @@ namespace Gladiator_Wars
             }
         }
 
+        public int calculateRecievedDamage(int damage)
+        {
+            int damageToRecieve = damage - (int)((ArmourPoints + (shield != null ? shield.armourPoints : 0)) * (isDefending ? 1.2f : 1f));
+            return (damageToRecieve < 0 ? 0 : damageToRecieve); 
+        }
+
+        public void Defend()
+        {
+            isDefending = true;
+        }
+
+        public void Heal(Gladiator gladiator)
+        {
+            hasHeald = true;
+            gladiator.recieveHealing(10);
+        }
+
+        public void recieveHealing(int health)
+        {
+            if (healthPoints + health > BASE_HEALTH) healthPoints = BASE_HEALTH;
+            else healthPoints += health;
+        }
 
         // ============================= STAT BASED METHODS =====================
         public int getDamageValue()
         {
-            return (int)(weapon.damage * (1.0 + (dexterity + strength) / 200.0));
+            return calculateGivenDamage(); 
         }
 
         public void calculateHealthPoints()
@@ -111,6 +150,13 @@ namespace Gladiator_Wars
             return BASE_INITIATIVE - totalWeight + athletics;
         }
 
+        public void assignUnitType()
+        {
+            if (weapon.type == WeaponType.Ranged) type = Type.Bowman;
+            else if (totalWeight > 70 && armour is HeavyArmour) type = Type.Tank;
+            else type = Type.Warrior;
+        } 
+
         // ========================== HELPER METHODS ==============================
 
         public int CompareTo(Gladiator other)
@@ -138,15 +184,15 @@ namespace Gladiator_Wars
         {
             if (nextNode != null)
             {
-                Vector2 unitVectorInDirectionOfNextNode = (Vector2)nextNode.position - position;
+                Vector2 unitVectorInDirectionOfNextNode = nextNode.position - position;
                 unitVectorInDirectionOfNextNode.Normalize();
                 Vector2 moveVector = Vector2.Multiply(unitVectorInDirectionOfNextNode, _velocity * gameTime.ElapsedGameTime.Milliseconds / 1000);
                 position += moveVector;
 
-                if (Vector2.Distance(position, (Vector2)nextNode.position) < 2)
+                if (Vector2.Distance(position, nextNode.position) < 2)
                 {
                     position = nextNode.position;
-                    nextNode = null;
+                    nextNode = null;            
                 }
             }
         }

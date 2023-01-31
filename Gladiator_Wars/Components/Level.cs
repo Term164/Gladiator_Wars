@@ -4,8 +4,6 @@ using Microsoft.Xna.Framework;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Security.Cryptography;
 
 namespace Gladiator_Wars
 {
@@ -24,8 +22,9 @@ namespace Gladiator_Wars
         public static readonly int BOARD_HEIGHT = 9, BOARD_WIDTH = 16;
         public int levelNumber = 0;
         private List<List<Difficulty>> levels;
-        private List<Difficulty> playerUnits = new List<Difficulty> {Difficulty.easy, Difficulty.easy, Difficulty.medium };
-            
+        private List<Difficulty> playerUnits = new List<Difficulty> {Difficulty.hard, Difficulty.hard, Difficulty.hard, Difficulty.medium, Difficulty.medium, Difficulty.medium };
+        //private List<Difficulty> playerUnits = new List<Difficulty> {Difficulty.easy, Difficulty.easy, Difficulty.easy};
+ 
         public Scene _currentScene;
         public ArrayList GUI;
 
@@ -34,6 +33,7 @@ namespace Gladiator_Wars
 
         private Stack<Move> nextMoveStack;
         private List<Move> gameMoves;
+        private Move _currentMove;
 
         public Player player1;
         public Player player2;
@@ -41,7 +41,7 @@ namespace Gladiator_Wars
         public GameState levelGameState = GameState.MainMenu;
 
         public GladiatorFactory gladiatorFactory;
-        public int seed = 164;
+        public int seed = 10022;
 
         public Level(Game game) : base(game)
         {
@@ -55,11 +55,11 @@ namespace Gladiator_Wars
 
             // ======================== DEFINE LEVELS =======================
             levels = new List<List<Difficulty>>(new List<Difficulty>[5]);
-            levels[0] = new List<Difficulty> {Difficulty.easy, Difficulty.easy, Difficulty.medium };
+            levels[0] = new List<Difficulty> {Difficulty.easy, Difficulty.easy, Difficulty.easy };
             levels[1] = new List<Difficulty> {Difficulty.easy, Difficulty.easy, Difficulty.medium, Difficulty.medium };
             levels[2] = new List<Difficulty> {Difficulty.easy, Difficulty.easy, Difficulty.medium, Difficulty.medium, Difficulty.hard };
             levels[3] = new List<Difficulty> {Difficulty.medium, Difficulty.hard, Difficulty.hard,Difficulty.medium, Difficulty.medium };
-            levels[4] = new List<Difficulty> {Difficulty.hard, Difficulty.hard, Difficulty.hard, Difficulty.hard };
+            levels[4] = new List<Difficulty> {Difficulty.hard, Difficulty.hard, Difficulty.hard, Difficulty.boss };
         }
 
         private void loadLevelUnits(List<Gladiator> gladiators)
@@ -113,12 +113,15 @@ namespace Gladiator_Wars
         {
             if (levelNumber == 0) // If this is the first level create new units
             {
-                loadLevelUnits(gladiatorFactory.generateGladiatorList(playerUnits, player1, 1, false)); // Load Human player units
-                loadLevelUnits(gladiatorFactory.generateGladiatorList(levels[0],player2,0,false));
+                loadLevelUnits(gladiatorFactory.generateGladiatorList(playerUnits, player1, 1));
+                loadLevelUnits(gladiatorFactory.generateGladiatorList(levels[4],player2,1));
             }
             else // Copy surviving units from the previous battle
             {
-                loadLevelUnits(gladiatorFactory.generateGladiatorList(levels[levelNumber], player2, 1, false)); // Load new AI units
+                Gladiator newGladiator = gladiatorFactory.generateNewGladiator(Board[1, 1], player1, Difficulty.medium, false);
+                player1.units.Add(newGladiator);
+                _currentScene.addItem(newGladiator);
+                loadLevelUnits(gladiatorFactory.generateGladiatorList(levels[levelNumber], player2, 1)); // Load new AI unitsI
                 resetPlayerUnits();
             }
 
@@ -130,7 +133,32 @@ namespace Gladiator_Wars
             Random random = new Random(seed);
             foreach(Gladiator gladiator in player1.units)
             {
-                gladiator.calculateHealthPoints(); //Reset health
+                int abbilityPointsAllocation = gladiator.experiencePoints / 10;
+                gladiator.experiencePoints = 0;
+                while(abbilityPointsAllocation > 0)
+                {
+                    switch (random.Next(5))
+                    {
+                        case 0: gladiator.strength++;
+                            break;
+                        case 1: gladiator.toughness++;
+                            break;
+                        case 2: gladiator.athletics++;
+                            break;
+                        case 3: gladiator.dexterity++;
+                            break;
+                        case 4: gladiator.perception++;
+                            break;
+                        default: throw new Exception("Wrong");
+                    }
+                    abbilityPointsAllocation--;
+                }
+
+                gladiator.calculateHealthPoints();
+                gladiator.calculateTotalWeight();
+                gladiator.calcualteTotalArmourPoints();
+                gladiator.CalculateMoveDistance();
+
                 // ==================== RESET POSITIONS ===================
                 int x;
                 int y;
@@ -172,6 +200,7 @@ namespace Gladiator_Wars
                 nextUnit = unitsPlayOrder.Dequeue();
             }
 
+            nextUnit.isDefending = false;
             nextUnit.player.setActiveTile(nextUnit.boardPosition);
             nextUnit.player.hasTurn = true;
             unitsPlayOrder.Enqueue(nextUnit);
@@ -181,9 +210,31 @@ namespace Gladiator_Wars
 
         public override void Update(GameTime gameTime)
         {
+            if(_currentMove != null)
+            {
+                if(_currentMove.unit.nextNode == null)
+                {
+                    Gladiator gladiator = _currentMove.unit;
+
+                    if (!gladiator.hasActionPoints())
+                    {
+                        gladiator.attackPoint = true;
+                        gladiator.movePoint= true;
+                        gladiator.player.hasTurn = false;
+                        selectNextUnit();
+                    }
+                    else if(gladiator.player.active == null)
+                    {
+                        gladiator.player.setActiveTile(gladiator.boardPosition);
+                    }
+                    _currentMove = null;
+                }
+            }
+
             if(nextMoveStack.Count > 0)
             {
                 Move nextMove = nextMoveStack.Pop();
+                _currentMove = nextMove;
                 gameMoves.Add(nextMove);
                 executeMove(nextMove);
             }
@@ -200,23 +251,14 @@ namespace Gladiator_Wars
                 case Action.Attack:
                     attackUnit(move);
                     break;
+                case Action.Block:
+                    blockUnit(move);
+                    break;
+                case Action.Heal:
+                    healUnit(move);
+                    break;
                 default: break;
             }
-
-            Gladiator gladiator = move.unit;
-
-            if (!gladiator.hasActionPoints())
-            {
-                gladiator.attackPoint = true;
-                gladiator.movePoint= true;
-                gladiator.player.hasTurn = false;
-                selectNextUnit();
-            }
-            else
-            {
-                move.unit.player.setActiveTile(move.unit.boardPosition);
-            }
-
         }
 
         public void addNextMove(Move move) {
@@ -226,7 +268,9 @@ namespace Gladiator_Wars
 
         private void attackUnit(Move unitMove) {
             SoundManager.PlayMelleAttackSound();
-            GUIRenderer.damageText.resetDamage((unitMove.endPos.unit.position + new Vector2(16,0))*Renderer.SCALE, unitMove.unit.getDamageValue().ToString());
+            int givenDamage = unitMove.endPos.unit.calculateRecievedDamage(unitMove.unit.calculateGivenDamage()); 
+            GUIRenderer.damageText.resetDamage((unitMove.endPos.unit.position + new Vector2(16,0))*Renderer.SCALE, givenDamage.ToString());
+            unitMove.unit.experiencePoints += givenDamage;
             unitMove.unit.attackPoint = false;
             unitMove.unit.attack(unitMove.endPos.unit);
         }
@@ -235,10 +279,30 @@ namespace Gladiator_Wars
             if (unitMove.unit.movePoint) unitMove.unit.movePoint = false;
             else unitMove.unit.attackPoint = false;
 
+            unitMove.unit.experiencePoints += 10;
             unitMove.unit.nextNode = unitMove.endPos;
             unitMove.unit.boardPosition.unit = null;
             unitMove.unit.boardPosition = unitMove.endPos;
             unitMove.endPos.unit = unitMove.unit;
+        }
+
+        private void blockUnit(Move unitMove)
+        {
+            unitMove.unit.experiencePoints += 10;
+            unitMove.unit.movePoint = false;
+            unitMove.unit.attackPoint = false;
+            unitMove.unit.Defend();
+        }
+
+
+        private void healUnit(Move unitMove)
+        {
+            if (unitMove.unit.movePoint) unitMove.unit.movePoint = false;
+            else unitMove.unit.attackPoint = false;
+            // Heal text
+            
+            unitMove.unit.experiencePoints += 10;
+            unitMove.unit.Heal(unitMove.endPos.unit);
         }
 
         public List<Move> getUnitMoves(Tile activeTile)
@@ -247,6 +311,8 @@ namespace Gladiator_Wars
             List<Move> possibleMoves = new List<Move>();
             possibleMoves.AddRange(getAllUnitMovementMoves(activeTile));
             if (activeTile.unit.attackPoint) possibleMoves.AddRange(getAllUnitAttackMoves(activeTile));
+            possibleMoves.Add(new Move(activeTile.unit, Action.Block, activeTile));
+            possibleMoves.AddRange(GetAllUnitHealMoves(activeTile));
             return possibleMoves;
         }
 
@@ -310,6 +376,39 @@ namespace Gladiator_Wars
 
             return possibleMoves;
         }
+
+        public List<Move> GetAllUnitHealMoves(Tile activeTile)
+        {
+            List<Move> possibleMoves = new List<Move>();
+            if (activeTile.unit.hasHeald) return possibleMoves;
+
+            for (int x = -1; x <= 1; x++)
+            {
+
+                for (int y = -1; y <= 1; y++)
+                {
+                    int boardPositionX = GameObject.convertPositionToBoardPosition(activeTile.position.X + x * Tile.TILE_SIZE);
+                    int boardPositionY = GameObject.convertPositionToBoardPosition(activeTile.position.Y + y * Tile.TILE_SIZE);
+
+                    if (boardPositionX >= 1 && boardPositionX < BOARD_WIDTH - 1
+                        && boardPositionY >= 1 && boardPositionY < BOARD_HEIGHT - 1
+                        && !(x == 0 && y == 0))
+                    {
+                        if (Board[boardPositionX, boardPositionY].unit != null)
+                        {
+                            if (Board[boardPositionX, boardPositionY].unit.player == activeTile.unit.player)
+                            {
+                                possibleMoves.Add(new Move(activeTile.unit, Action.Heal, Board[boardPositionX, boardPositionY]));
+                            }                            
+                        }
+
+                    }
+                }
+            }
+
+            return possibleMoves;
+        }
+
 
         public void reset()
         {

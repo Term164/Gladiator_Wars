@@ -115,7 +115,7 @@ namespace Gladiator_Wars
                 gladiator.tint,
                 0,
                 new Vector2(0, 0),
-                1, team, 0);
+                (gladiator.isBoss ? 1.2f : 1), team, 0);
 
             if (gladiator.armour != null) RenderArmour(gladiator, team);
             if (gladiator.weapon != null) RenderWeapon(gladiator, team);
@@ -133,7 +133,7 @@ namespace Gladiator_Wars
                 gladiator.armour.tint,
                 0,
                 new Vector2(0, 0),
-                1, team, 0);
+                (gladiator.isBoss ? 1.2f : 1), team, 0);
         }
 
         private void RenderWeapon(Gladiator gladiator, SpriteEffects team)
@@ -155,7 +155,7 @@ namespace Gladiator_Wars
                 gladiator.weapon.tint,
                 gladiator.weapon.rotation + rotation,
                 new Vector2(0, 0),
-                0.8f, SpriteEffects.None, 0);
+                (gladiator.isBoss ? 1f : 0.8f), SpriteEffects.None, 0);
         }
 
         private void RenderShield(Gladiator gladiator, SpriteEffects team)
@@ -170,7 +170,7 @@ namespace Gladiator_Wars
                 gladiator.shield.tint,
                 0,
                 new Vector2(0, 0),
-                0.8f, SpriteEffects.None, 0);
+                (gladiator.isBoss ? 1f : 0.8f), SpriteEffects.None, 0);
         }
 
 

@@ -70,11 +70,11 @@ namespace Gladiator_Wars
                 default: throw new Exception("This difficulty level does not exist.");
             }
 
-            gladiator.strength = random.Next(min,range);
-            gladiator.toughness = random.Next(min,range);
-            gladiator.athletics = random.Next(min,range);
-            gladiator.dexterity = random.Next(min,range);
-            gladiator.perception = random.Next(min,range);
+            gladiator.strength = random.Next(min, min + range);
+            gladiator.toughness = random.Next(min,min + range);
+            gladiator.athletics = random.Next(min,min + range);
+            gladiator.dexterity = random.Next(min,min + range);
+            gladiator.perception = random.Next(min,min + range);
 
             // ======================== CALCULATING FINAL VALUES =========================
 
@@ -82,25 +82,30 @@ namespace Gladiator_Wars
             gladiator.calculateTotalWeight();
             gladiator.calcualteTotalArmourPoints();
             gladiator.CalculateMoveDistance();
+            gladiator.assignUnitType();
 
+            if (difficulty == Difficulty.boss) gladiator.isBoss = true;
             return gladiator;
         }
 
-        public List<Gladiator> generateGladiatorList(List<Difficulty> difficultyList,Player player, int numOfArchers, bool boss) {
+        public List<Gladiator> generateGladiatorList(List<Difficulty> difficultyList,Player player, int numOfArchers) {
             List<Gladiator> gladiators = new List<Gladiator>();
             for (int i = 0; i < difficultyList.Count; i++)
             {
                 int x, y;
-                if(player is AIPlayer)
+                do
                 {
-                    x = random.Next(9, 15);
-                    y = random.Next(1, 8);
-                }
-                else
-                {
-                    x = random.Next(1, 9);
-                    y = random.Next(1, 8);
-                }
+                    if(player is AIPlayer)
+                    {
+                        x = random.Next(9, 15);
+                        y = random.Next(1, 8);
+                    }
+                    else
+                    {
+                        x = random.Next(1, 9);
+                        y = random.Next(1, 8);
+                    }
+                } while (level.Board[x, y].unit != null);
 
                 gladiators.Add(generateNewGladiator(level.Board[x,y], player, difficultyList[i], numOfArchers > 0));
                 if(numOfArchers > 0) numOfArchers--;
